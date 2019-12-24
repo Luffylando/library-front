@@ -5,7 +5,7 @@ import Footer from "../../../components/Footer";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import SVGInline from "react-svg-inline";
-import { backArrow } from "../../../assets/icons";
+import { pencil, backArrow } from "../../../assets/icons";
 
 export default class SingleBook extends Component {
   constructor() {
@@ -28,8 +28,11 @@ export default class SingleBook extends Component {
           <Link className="backBtn" to="/catalog">
             <p>Go Back</p> <SVGInline svg={backArrow} />
           </Link>
+          <Link className="editBtn" to={`/books/edit/${this.state.book.id}`}>
+            <p>Edit Book</p> <SVGInline svg={pencil} />
+          </Link>
           <img
-            src={`../books/${this.state.book.image}.jpg`}
+            src={`../books/${this.state.book.image}`}
             alt={`${this.state.book.image}${this.state.book.id}`}
           />
           <div className="bookDesc">

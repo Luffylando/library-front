@@ -19,21 +19,22 @@ export default class Catalog extends Component {
     this.setState({ books: books.data });
   };
   render() {
-    console.log("books", this.state.books);
     return (
       <>
         <Header />
         <CatalogStyle>
-          <div className="adminAddBtn">
-            <Link to="books/add">Add New Book</Link>
-          </div>
+          {localStorage.loginToken ? (
+            <div className="adminAddBtn">
+              <Link to="books/add">Add New Book</Link>
+            </div>
+          ) : null}
           <H1>Books Catalog</H1>
           {this.state.books.length !== 0
             ? this.state.books.map((val, key) => (
                 <div className="book" key={key}>
                   <img
                     className="bookImg"
-                    src={`../books/${val.image}.jpg`}
+                    src={`../books/${val.image}`}
                     alt={val.title + val.id}
                   />
                   <div className="bookDesc">

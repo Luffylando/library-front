@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const AddBookStyle = styled.div`
+const EditBookStyle = styled.div`
   min-height: calc(100vh - 215px);
   padding: 100px 400px;
 
@@ -110,4 +110,4 @@ const AddBookStyle = styled.div`
   }
 `;
 
-export default AddBookStyle;
+export default EditBookStyle;

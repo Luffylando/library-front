@@ -10,6 +10,7 @@ import About from "../pages/About";
 import Catalog from "../pages/Books/Catalog";
 import SingleBook from "../pages/Books/SingleBook";
 import AddBook from "../pages/Books/AddBook";
+import EditBook from "../pages/Books/EditBook";
 
 const DefaultSwitch = () => (
   <Switch>
@@ -18,6 +19,7 @@ const DefaultSwitch = () => (
     <Route path="/contact" component={Contact} />
     <Route path="/catalog" component={Catalog} />
     <Route path="/books/add" component={AddBook} />
+    <Route path="/books/edit/:id" component={EditBook} />
     <Route path="/books/:id" component={SingleBook} />
 
     <Route path="/about" component={About} />

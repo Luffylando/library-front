@@ -1,5 +1,5 @@
-import React, { Fragment, useState } from "react";
-import AddBookStyle from "./style";
+import React, { Fragment, useState, useEffect } from "react";
+import EditBookStyle from "./style";
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
 import axios from "axios";
@@ -14,12 +14,38 @@ const options = [
   { id: "Belatristics", name: "Belatristics" }
 ];
 
-const AddBook = () => {
+const EditBook = () => {
+  const [book, setBook] = useState({});
+  const [count, setCount] = useState(0);
+  const [title, author, genre, image] = useState("");
   const [imageName] = useState("");
-  let [genre] = useState("");
   const [file, setFile] = useState("");
   const [filename, setFilename] = useState("Chose File");
   const [uploadedFile, setUploadedFile] = useState({});
+  let [bookInfo] = useState({});
+
+  let id = window.location.pathname.split("/")[3];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios(`http://localhost:4000/books/${id}`);
+      setBook(result.data);
+    };
+    fetchData();
+  }, []);
+
+  // useEffect(() => {
+  //   const call = async () => {
+  //     try {
+  //       let book = await axios.get(`http://localhost:4000/books/${id}`);
+
+  //       bookInfo = book.data;
+  //     } catch (err) {
+  //       console.log("error", err);
+  //     }
+  //   };
+  //   call();
+  // });
 
   const onChange = e => {
     setFile(e.target.files[0]);
@@ -29,48 +55,14 @@ const AddBook = () => {
   return (
     <Fragment>
       <Header />
-      <AddBookStyle>
-        <H1>Add New Book</H1>
+      <EditBookStyle>
+        <H1>Edit Book</H1>
         <Formik
           initialValues={{ author: "", title: "" }}
           onSubmit={async (values, { setSubmitting }) => {
-            const formData = new FormData();
-            formData.append("file", file);
-            try {
-              const res = await axios.post(
-                "http://localhost:4000/books/imgUpload",
-                formData,
-                {
-                  headers: {
-                    "Contant-Type": "multipart/form-data"
-                  }
-                }
-              );
-
-              const { fileName, filePath, type, fullName } = res.data;
-
-              setUploadedFile({ fullName, filePath });
-
-              await axios.post("http://localhost:4000/books/add", {
-                title: values.title,
-                author: values.author,
-                genre: values.genre,
-                image: fullName
-              });
-
-              window.location.href = "/catalog";
-            } catch (err) {
-              console.log("err", err);
-              if (err.response.status === 500) {
-                console.log("THERE was a problem with the server.");
-              } else {
-                console.log(err.response.data.msg);
-              }
-            }
-
             setTimeout(() => {
               setSubmitting(false);
-            }, 400);
+            }, 0);
           }}
         >
           {({
@@ -91,7 +83,7 @@ const AddBook = () => {
                   name="author"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.author}
+                  value={book.author ? book.author : values.author}
                 />
                 <div className="error">
                   {errors.author && touched.author && errors.author}
@@ -104,7 +96,7 @@ const AddBook = () => {
                   name="title"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.title}
+                  value={book.title ? book.title : values.title}
                 />
                 <div className="error">
                   {errors.title && touched.title && errors.title}
@@ -115,7 +107,7 @@ const AddBook = () => {
                   <label>Genre</label>
                   <select
                     name="genre"
-                    value={values.genre}
+                    value={book.genre ? book.genre : values.genre}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     style={{ display: "block" }}
@@ -163,10 +155,9 @@ const AddBook = () => {
             </form>
           )}
         </Formik>
-      </AddBookStyle>
+      </EditBookStyle>
       <Footer />
     </Fragment>
   );
 };
-
-export default AddBook;
+export default EditBook;
