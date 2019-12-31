@@ -38,6 +38,8 @@ const EditBookStyle = styled.div`
       align-items: center;
       justify-content: flex-start;
       margin-bottom: 30px;
+      position:relative;
+
       .selectDiv {
         width: 49%;
         height: 60px;
@@ -66,6 +68,8 @@ const EditBookStyle = styled.div`
         display: flex;
         flex-direction: column;
 
+
+
         p {
           margin: 0px;
           font-size: 16px;
@@ -92,10 +96,27 @@ const EditBookStyle = styled.div`
       }
     }
 
+.editImage {
+  position:absolute;
+  top: 0px;
+  right: 50px;
+  display: flex;
+  flex-direction:column;
+
+  label {
+    margin-bottom: 5px;
+  }
+
+    .chosenImg {
+          height: 150px;
+          width: 100px;
+        }
+}
+
     .submitBtn {
       width: 100%;
       text-align: center;
-      margin-top: 50px;
+      margin-top: 100px;
       button {
         border: none;
         color: #fff;

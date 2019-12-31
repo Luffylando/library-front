@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import bg from "../../../assets/imgs/paperBg.jpg";
 
-const CatalogStyle = styled.div`
+const SearchStyle = styled.div`
   min-height: calc(100vh - 215px);
   padding: 50px 500px;
   display: flex;
@@ -33,7 +33,11 @@ const CatalogStyle = styled.div`
 
 
 h1 {
-  margin: 0px 0px 80px 0px;
+  margin: 0px 0px 10px 0px;
+  text-align:center;
+}
+h4 {
+  margin: 0px 0px 70px 0px;
   text-align:center;
 }
   .book {
@@ -84,4 +88,4 @@ h1 {
   }
 `;
 
-export default CatalogStyle;
+export default SearchStyle;

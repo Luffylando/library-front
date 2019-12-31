@@ -12,11 +12,6 @@ export default class Navbar extends Component {
           </Link>
         </li>
         <li>
-          <Link to="/service" className="cool-link2">
-            Service
-          </Link>
-        </li>
-        <li>
           <Link to="/contact" className="cool-link2">
             Contact
           </Link>

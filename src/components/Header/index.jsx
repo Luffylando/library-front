@@ -15,6 +15,28 @@ import H2 from "../../ui/H2";
 import P from "../../ui/P";
 
 export default class Header extends Component {
+  constructor(){
+    super();
+    this.state ={
+      author: "",
+      title: "",
+      genre: "",
+      quote: "",
+      keyword: "",
+      tag: ""
+    }
+  }
+
+  setValue = (e) => {
+    this.setState({[e.target.name]: e.target.value })
+  }
+
+  searchClick = () => {
+
+    let tag = this.state.tag === "" ? "tag" : this.state.tag;
+    let keyword = this.state.keyword === "" ? "keyword" : this.state.keyword;
+    window.location.href = `/books/search/${keyword}/${tag}`
+  }
   render() {
     return (
       <HeaderStyle>
@@ -33,10 +55,30 @@ export default class Header extends Component {
               <div className="searchButton">
                 <input
                   type="search"
+                  name="keyword"
+                  onChange={this.setValue}
+                  value={this.state.keyword}
                   className="searchInput"
                   placeholder="Search"
-                ></input>
-                <button className="goButton">Go</button>
+                >
+                </input>
+                <div className="sortBy">
+                  <select
+                     name="tag"
+                     onChange={this.setValue}
+                     defaultValue="Sort By:"
+                     >
+                    <option value="">Search By:</option>
+                    <option value="title">title</option>
+                    <option value="author">author</option>
+                    <option value="genre">genre</option>
+                    <option value="quotes">quote</option>
+
+
+                  </select>
+                </div>
+                
+                <button onClick={this.searchClick} className="goButton">Go</button>
               </div>
             </div>
           </div>
@@ -53,7 +95,7 @@ export default class Header extends Component {
                 </div>
                 <div className="item">
                   <SVGInline svg={pencil} />
-                  <Link to="#">
+                  <Link to={`/users/edit/${localStorage.userId}`}>
                     <P>Edit</P>
                   </Link>
                 </div>

@@ -2,7 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import EditBookStyle from "./style";
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
-import axios from "axios";
+import axios,{AxiosResponse} from "axios";
 import { Formik } from "formik";
 import H1 from "../../../ui/H1";
 
@@ -14,43 +14,45 @@ const options = [
   { id: "Belatristics", name: "Belatristics" }
 ];
 
-const EditBook = () => {
-  const [book, setBook] = useState({});
-  const [count, setCount] = useState(0);
-  const [title, author, genre, image] = useState("");
-  const [imageName] = useState("");
+const EditBook = (props) => {
+  const apiUrl = "http://localhost:4000/books/" + window.location.pathname.split("/")[3];
   const [file, setFile] = useState("");
   const [filename, setFilename] = useState("Chose File");
   const [uploadedFile, setUploadedFile] = useState({});
-  let [bookInfo] = useState({});
+
+  const initialBookState = {
+    title: '',
+    author: '',
+    genre: '',
+    image: ''
+  }
+
+  const [book, setBook] = useState(initialBookState)
 
   let id = window.location.pathname.split("/")[3];
 
+
+
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios(`http://localhost:4000/books/${id}`);
-      setBook(result.data);
-    };
+      const  result = await axios.get(apiUrl);
+        setBook(result.data);
+    }
     fetchData();
+       
   }, []);
-
-  // useEffect(() => {
-  //   const call = async () => {
-  //     try {
-  //       let book = await axios.get(`http://localhost:4000/books/${id}`);
-
-  //       bookInfo = book.data;
-  //     } catch (err) {
-  //       console.log("error", err);
-  //     }
-  //   };
-  //   call();
-  // });
 
   const onChange = e => {
     setFile(e.target.files[0]);
     setFilename(e.target.files[0].name);
   };
+
+  const changeNow = e => {
+
+    e.persist();
+    setBook({...book, [e.target.name]: e.target.value});
+
+  }
 
   return (
     <Fragment>
@@ -60,10 +62,57 @@ const EditBook = () => {
         <Formik
           initialValues={{ author: "", title: "" }}
           onSubmit={async (values, { setSubmitting }) => {
+
+            
+            if(file){
+
+              const formData = new FormData();
+              formData.append("file", file);
+              try {
+                const res = await axios.post(
+                  "http://localhost:4000/books/imgUpload",
+                  formData,
+                  {
+                    headers: {
+                      "Contant-Type": "multipart/form-data"
+                  }
+                }
+              );
+              const { filePath, fullName } = res.data;
+              
+              setUploadedFile({ fullName, filePath });
+              
+              const data = { author: book.author, title: book.title, genre: book.genre, image: fullName };
+
+              await axios.put(`http://localhost:4000/books/edit/${window.location.pathname.split("/")[3]}`, data)
+              .then((result) => {
+                props.history.push('/books/' + window.location.pathname.split("/")[3])
+              }).catch((error) => console.log('error',error))
+              
+              
+              setTimeout(() => {
+                setSubmitting(false);
+              }, 0);
+            }catch(error){
+              console.log('error',error);
+            }  
+          } else {
+            try {
+            
+            const data = { author: book.author, title: book.title, genre: book.genre, image: book.image };
+            
+            await axios.put(`http://localhost:4000/books/edit/${window.location.pathname.split("/")[3]}`, data)
+            .then((result) => {
+              props.history.push('/books/' + window.location.pathname.split("/")[3])
+            }).catch((error) => console.log('error',error))
+            
             setTimeout(() => {
               setSubmitting(false);
+              
             }, 0);
-          }}
+          }catch(error){
+            console.log('error',error);
+          }}}}
         >
           {({
             values,
@@ -81,9 +130,9 @@ const EditBook = () => {
                 <input
                   type="text"
                   name="author"
-                  onChange={handleChange}
+                  onChange={changeNow}
                   onBlur={handleBlur}
-                  value={book.author ? book.author : values.author}
+                  value={values.author ? values.author : book.author}
                 />
                 <div className="error">
                   {errors.author && touched.author && errors.author}
@@ -94,9 +143,9 @@ const EditBook = () => {
                 <input
                   type="text"
                   name="title"
-                  onChange={handleChange}
+                  onChange={changeNow}
                   onBlur={handleBlur}
-                  value={book.title ? book.title : values.title}
+                  value={values.title ? values.title : book.title}
                 />
                 <div className="error">
                   {errors.title && touched.title && errors.title}
@@ -108,7 +157,7 @@ const EditBook = () => {
                   <select
                     name="genre"
                     value={book.genre ? book.genre : values.genre}
-                    onChange={handleChange}
+                    onChange={changeNow}
                     onBlur={handleBlur}
                     style={{ display: "block" }}
                   >
@@ -130,7 +179,8 @@ const EditBook = () => {
                 </div>
 
                 <div className="fileDiv">
-                  <p>Pick Image:</p>
+                  <p>Pick New Image:</p>
+            
                   <label htmlFor="customFile">{filename}</label>
                   <div htmlFor="customFile" className="typeFile">
                     <input
@@ -145,6 +195,10 @@ const EditBook = () => {
                       {errors.image && touched.image && errors.image}
                     </div>
                   </div>
+                </div>
+                <div className="editImage">
+                      <label>Current Image:</label>
+                  <img className="chosenImg"  alt={`${book.image}${book.id}`} src={book.image ? `../../../books/${book.image}` : null}></img>
                 </div>
               </div>
               <div className="submitBtn">

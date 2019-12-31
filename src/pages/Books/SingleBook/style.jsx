@@ -6,7 +6,56 @@ const SingleBookStyle = styled.div`
   display: flex;
   position: relative;
 
-  .editBtn {
+
+  .deleteBtn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 10px;
+    right: 380px;
+    border: 1px solid #000;
+    cursor:pointer;
+    background: #fff;
+    padding: 7px 20px;
+    border-radius: 50px;
+    color: #000;
+    transition: 0.4s all;
+
+    :hover {
+      background: #3f5d88;
+      color: #fff;
+
+      span {
+        svg {
+          path {
+            fill: #fff;
+          }
+        }
+      }
+    }
+
+    p {
+      margin: 0px;
+    }
+
+    span {
+      width: 18px;
+      height: 18px;
+
+      svg {
+        width: 18px;
+        height: 18px;
+        margin-left: 5px;
+        path {
+          transition: fill 0.4s ease;
+          fill: #000;
+        }
+      }
+    }
+  }
+
+  .editBtn{
     display: flex;
     align-items: center;
     justify-content: center;

@@ -5,7 +5,7 @@ import Footer from "../../../components/Footer";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import SVGInline from "react-svg-inline";
-import { pencil, backArrow } from "../../../assets/icons";
+import { pencil, backArrow, x } from "../../../assets/icons";
 
 export default class SingleBook extends Component {
   constructor() {
@@ -20,6 +20,15 @@ export default class SingleBook extends Component {
     let book = await axios.get(`http://localhost:4000/books/${id}`);
     this.setState({ book: book.data });
   }
+
+   deleteBook = async() => {
+
+    let id = this.props.match.params.id;
+    let deleteBook = await axios.delete(`http://localhost:4000/books/delete/${id}`);
+    window.location.href = "/catalog";
+
+
+  }
   render() {
     return (
       <>
@@ -31,6 +40,9 @@ export default class SingleBook extends Component {
           <Link className="editBtn" to={`/books/edit/${this.state.book.id}`}>
             <p>Edit Book</p> <SVGInline svg={pencil} />
           </Link>
+          <div className="deleteBtn" onClick={() => {this.deleteBook()}}>
+            <p>Delete Book</p> <SVGInline svg={x} />
+          </div>
           <img
             src={`../books/${this.state.book.image}`}
             alt={`${this.state.book.image}${this.state.book.id}`}
