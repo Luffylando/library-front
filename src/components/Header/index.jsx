@@ -8,35 +8,47 @@ import {
   register,
   contact,
   account,
-  pencil
+  pencil,
+  downArrow
 } from "../../assets/icons";
 import { Link } from "react-router-dom";
 import H2 from "../../ui/H2";
 import P from "../../ui/P";
+import onClickOutside from "react-onclickoutside";
 
-export default class Header extends Component {
-  constructor(){
+class Header extends Component {
+  constructor() {
     super();
-    this.state ={
+    this.state = {
       author: "",
       title: "",
       genre: "",
       quote: "",
       keyword: "",
-      tag: ""
-    }
+      tag: "",
+      toggleSubmenu: false
+    };
   }
 
-  setValue = (e) => {
-    this.setState({[e.target.name]: e.target.value })
-  }
+  handleClickOutside = evt => {
+    // ..handling code goes here...
+
+    this.setState({ toggleSubmenu: false });
+  };
+
+  setValue = e => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
 
   searchClick = () => {
-
     let tag = this.state.tag === "" ? "tag" : this.state.tag;
     let keyword = this.state.keyword === "" ? "keyword" : this.state.keyword;
-    window.location.href = `/books/search/${keyword}/${tag}`
-  }
+    window.location.href = `/books/search/${keyword}/${tag}`;
+  };
+
+  toggleSubmenu = () => {
+    this.setState({ toggleSubmenu: !this.state.toggleSubmenu });
+  };
   render() {
     return (
       <HeaderStyle>
@@ -60,25 +72,24 @@ export default class Header extends Component {
                   value={this.state.keyword}
                   className="searchInput"
                   placeholder="Search"
-                >
-                </input>
+                ></input>
                 <div className="sortBy">
                   <select
-                     name="tag"
-                     onChange={this.setValue}
-                     defaultValue="Sort By:"
-                     >
+                    name="tag"
+                    onChange={this.setValue}
+                    defaultValue="Sort By:"
+                  >
                     <option value="">Search By:</option>
                     <option value="title">title</option>
                     <option value="author">author</option>
                     <option value="genre">genre</option>
                     <option value="quotes">quote</option>
-
-
                   </select>
                 </div>
-                
-                <button onClick={this.searchClick} className="goButton">Go</button>
+
+                <button onClick={this.searchClick} className="goButton">
+                  Go
+                </button>
               </div>
             </div>
           </div>
@@ -87,16 +98,27 @@ export default class Header extends Component {
               <>
                 <div className="item">
                   <SVGInline svg={account} />
-                  <Link to="#">
+                  <Link to="#" onClick={this.toggleSubmenu}>
                     <P>
-                      {localStorage.userFirstName} {localStorage.userLastName}
+                      {localStorage.userFirstName} {localStorage.userLastName}{" "}
+                      <SVGInline svg={downArrow} />
+                      {this.state.toggleSubmenu ? (
+                        <div className="submenuWindow">
+                          <Link to="#">
+                            <p>Change/Set Image</p>
+                          </Link>
+                          <Link to="/changePassword">
+                            <p>Change Password</p>
+                          </Link>
+                        </div>
+                      ) : null}
                     </P>
                   </Link>
                 </div>
                 <div className="item">
                   <SVGInline svg={pencil} />
                   <Link to={`/users/edit/${localStorage.userId}`}>
-                    <P>Edit</P>
+                    <P>Edit Profile</P>
                   </Link>
                 </div>
                 <div className="item">
@@ -134,3 +156,5 @@ export default class Header extends Component {
     );
   }
 }
+
+export default onClickOutside(Header);

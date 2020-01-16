@@ -26,6 +26,13 @@ export default class Navbar extends Component {
             Catalog
           </Link>
         </li>
+        {localStorage.getItem('userRole') === 'admin' || localStorage.getItem('userRole') === 'moderator' ? 
+        <li>
+          <Link to="/contact/messages" className="cool-link2">
+            Messages
+          </Link>
+        </li>
+      : null}
       </NavbarStyle>
     );
   }

@@ -47,7 +47,7 @@ export default class Search extends Component {
                     <p>Genre: {val.genre}</p>
                     <p className="quote">Quote: Quote ...</p>
                     <div className="btn">
-                      <Link to={`books/${val.id}`}>
+                      <Link to={`/books/${val.id}`}>
                         <button>Details</button>
                       </Link>
                     </div>

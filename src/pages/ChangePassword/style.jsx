@@ -1,9 +1,10 @@
 import styled from "styled-components";
 
-const RegisterStyle = styled.div`
+const ChangePasswordStyle = styled.div`
   min-height: calc(100vh - 215px);
-  padding: 30px 650px;
+  padding: 50px 400px;
   display: flex;
+  align-items: center;
   justify-content: center;
 
   form {
@@ -41,24 +42,14 @@ const RegisterStyle = styled.div`
           margin: 0px 5px;
           padding-left: 10px;
         }
-        input[type="radio"] {
-          height: 15px;
-          width: 30px;
-          margin-right: 0px;
-        }
       }
     }
-
     .regBtn {
       display: flex;
-      justify-content: space-between;
-      width: 100%;
+      align-items: center;
+      justify-content: flex-end;
       padding: 0px 105px 40px 105px;
-      text-align: right;
-
-      a {
-        text-decoration: underline;
-      }
+      width: 100%;
 
       .btn {
         border: none;
@@ -72,4 +63,4 @@ const RegisterStyle = styled.div`
   }
 `;
 
-export default RegisterStyle;
+export default ChangePasswordStyle;

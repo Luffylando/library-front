@@ -5,6 +5,7 @@ import Footer from "../../../components/Footer";
 import axios,{AxiosResponse} from "axios";
 import { Formik } from "formik";
 import H1 from "../../../ui/H1";
+import * as moment from 'moment';
 
 const options = [
   { id: "female", name: "Female" },
@@ -16,14 +17,12 @@ const EditUser = (props) => {
     const [user, setUser] = useState("");
   const apiUrl = "http://localhost:4000/users/" + window.location.pathname.split("/")[3];
 
-  let id = window.location.pathname.split("/")[3];
-
-
 
   useEffect(() => {
     const fetchData = async () => {
       const  result = await axios.get(apiUrl);
         setUser(result.data);
+        console.log('result',result)
     }
     fetchData();
        
@@ -47,8 +46,18 @@ const EditUser = (props) => {
 
             
               const data = { firstName: user.firstName, lastName: user.lastName, gender: user.gender, email: user.email, dob: user.dob };
+
+
+             
+            
+
               try {
                   await axios.put(`http://localhost:4000/users/edit/${window.location.pathname.split("/")[3]}`, data)
+                    localStorage.removeItem("userFirstName");
+                    localStorage.removeItem("userLastName");
+                    localStorage.setItem("userFirstName", user.firstName);
+                    localStorage.setItem("userLastName", user.lastName);
+                    window.location.href = "/";
                 }catch(err){
                     console.log('error',err)
                 }
@@ -58,6 +67,7 @@ const EditUser = (props) => {
             }, 0);
         }}
         >
+
           {({
             values,
             errors,
@@ -68,60 +78,70 @@ const EditUser = (props) => {
             isSubmitting
             /* and other goodies */
           }) => (
+
             <form onSubmit={handleSubmit}>
               <div className="inputDiv">
-                <label>Author</label>
+                <div className="labelInput">
+                <label>First Name</label>
                 <input
                   type="text"
-                  name="author"
+                  name="firstName"
                   onChange={changeNow}
                   onBlur={handleBlur}
-                  value={values.author ? values.author : user.author}
-                />
+                  value={user.firstName ? user.firstName : values.firstName}
+                  />
+                  </div>
                 <div className="error">
-                  {errors.author && touched.author && errors.author}
+                  {errors.firstName && touched.firstName && errors.firstName}
                 </div>
               </div>
               <div className="inputDiv">
-                <label>Title</label>
+              <div className="labelInput">
+
+                <label>Last Name</label>
                 <input
                   type="text"
-                  name="title"
+                  name="lastName"
                   onChange={changeNow}
                   onBlur={handleBlur}
-                  value={values.title ? values.title : user.title}
+                  value={user.lastName ? user.lastName : values.lastName}
                 />
+                </div>
                 <div className="error">
-                  {errors.title && touched.title && errors.title}
+                  {errors.lastName && touched.lastName && errors.lastName}
                 </div>
               </div>
-              <div className="selectAndFile">
-                <div className="selectDiv">
-                  <label>Genre</label>
-                  <select
-                    name="genre"
-                    value={user.genre ? user.genre : values.genre}
-                    onChange={changeNow}
-                    onBlur={handleBlur}
-                    style={{ display: "block" }}
-                  >
-                    <option key={""} value={""} />
+                <div className="inputDiv">
+                <div className="labelInput">
 
-                    {options.map(option => (
-                      <option
-                        key={option.id}
-                        value={option.name}
-                        label={option.name}
-                      >
-                        {option.name}
-                      </option>
-                    ))}
-                  </select>
+                  <label>Date of Birth</label>
+                 <input 
+                  type="date" 
+                  name="dob" 
+                  onChange={changeNow}
+                  onBlur={handleBlur}
+                  value={user.dob ? moment(user.dob).format('YYYY-MM-DD') : values.dob}
+                 />
+                 </div>
                   <div className="error">
-                    {errors.genre && touched.genre && errors.genre}
+                    {errors.dob && touched.dob && errors.dob}
+                    
                   </div>
                 </div>
-              </div>
+                <div className="inputDiv">
+                <div className="labelInput">
+
+                  <label>Email</label>
+                 <input type="text" name="email" 
+                 value={user.email ? user.email : values.email }
+                 onChange={changeNow}
+                  onBlur={handleBlur}
+                 />
+                 </div>
+                  <div className="error">
+                    {errors.email  && touched.email && errors.email}
+                  </div>
+                </div>
               <div className="submitBtn">
                 <button type="submit" disabled={isSubmitting}>
                   Submit

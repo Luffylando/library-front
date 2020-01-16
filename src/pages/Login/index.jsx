@@ -30,8 +30,10 @@ export default class Login extends Component {
         email: data.email,
         password: data.password
       });
+
       localStorage.setItem("loginToken", login.data.token);
       localStorage.setItem("userId", login.data.userId);
+      localStorage.setItem("userRole", login.data.userRole);
       localStorage.setItem("userFirstName", login.data.userFirstName);
       localStorage.setItem("userLastName", login.data.userLastName);
 
