@@ -25,7 +25,7 @@ const ChangePasswordStyle = styled.div`
       font-size: 15px;
     }
     .fields {
-      padding: 40px 100px;
+      padding: 40px 100px 10px 100px;
       width: 100%;
       .inputRow {
         width: 100%;
@@ -48,7 +48,7 @@ const ChangePasswordStyle = styled.div`
       display: flex;
       align-items: center;
       justify-content: flex-end;
-      padding: 0px 105px 40px 105px;
+      padding: 0px 105px 20px 105px;
       width: 100%;
 
       .btn {

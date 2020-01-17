@@ -5,7 +5,7 @@ const NavbarStyle = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: 0px 40px;
+  padding: 0px 100px;
   list-style-type: none;
   border-bottom: 1px solid #ddd;
 
