@@ -20,7 +20,10 @@ import ChangePassword from "../pages/ChangePassword";
 const DefaultSwitch = () => (
   <Switch>
     <Route exact path="/" component={Home} />
-    <Route path="/contact/messages/:paginationNumber" component={Messages} />
+    <Route
+      path="/contact/messages/:paginationNumber/:itemsPerPage"
+      component={Messages}
+    />
     <Route path="/members/verify/:id/:verificationToken" component={Verify} />
     <Route exact path="/contact/messages/:id" component={SingleMessage} />
 

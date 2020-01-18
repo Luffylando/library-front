@@ -19,8 +19,10 @@ class Messages extends Component {
   async componentDidMount() {
     let messagesCount = await axios.get(`http://localhost:4000/contact/`);
     let paginationNumber = window.location.pathname.split("/")[3];
+    let itemsPerPage = window.location.pathname.split("/")[4];
+
     let messages = await axios.get(
-      `http://localhost:4000/contact/messages/${paginationNumber}`
+      `http://localhost:4000/contact/messages/${paginationNumber}/${itemsPerPage}`
     );
     this.setState({
       messages: messages.data,
