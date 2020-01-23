@@ -6,29 +6,31 @@ import Footer from "../../../components/Footer";
 import Pagination from "../../../components/Pagination";
 import axios from "axios";
 
-class Messages extends Component {
+class AnsweredMessages extends Component {
   constructor(props) {
     super(props);
     this.state = {
       messagesCount: [],
       messages: [],
-      paginationNumber: 1
+      activePage: 1
     };
   }
 
   async componentDidMount() {
-    let messagesCount = await axios.get(`http://localhost:4000/contact`);
-    let paginationNumber = window.location.pathname.split("/")[3];
-    let itemsPerPage = window.location.pathname.split("/")[4];
+    let messagesCount = await axios.get(
+      `http://localhost:4000/contact/messages/answered`
+    );
+    let activePage = window.location.pathname.split("/")[4];
+    let itemsPerPage = window.location.pathname.split("/")[5];
 
     let messages = await axios.get(
-      `http://localhost:4000/contact/messages/${paginationNumber}/${itemsPerPage}`
+      `http://localhost:4000/contact/messages/answered/${activePage}/${itemsPerPage}`
     );
     this.setState({
       messages: messages.data,
       messagesCount: messagesCount.data,
-      activePage: paginationNumber,
-      itemsPerPage
+      itemsPerPage,
+      activePage
     });
   }
 
@@ -37,7 +39,7 @@ class Messages extends Component {
       <>
         <Header />
         <MessageStyle>
-          <h1>Contact Messages</h1>
+          <h1>Answered Messages</h1>
           {this.state.messages.length !== 0 ? (
             <table className="ui celled table">
               <thead className="">
@@ -59,10 +61,12 @@ class Messages extends Component {
                     <td className="">{value.message}</td>
                     <td className="">status to add...</td>
                     <td className="center aligned">
-                      <Link to={`/contact/messages/${value.id}`}>
-                        <button className="ui green button">Answer</button>
+                      <Link to="#">
+                        <button className="ui green button">Answered!</button>
                       </Link>
-                      <button className="ui red button">Archive</button>
+                      <button className="ui red button">
+                        Click to Archive
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -71,12 +75,14 @@ class Messages extends Component {
           ) : (
             "There are no more messages."
           )}
+          {console.log(
+            'window.location.pathname.split("/")[4]',
+            window.location.pathname.split("/")[4]
+          )}
           <Pagination
-            paginationCount={
-              this.state.messagesCount ? this.state.messagesCount : []
-            }
-            currentPage={window.location.pathname.split("/")[3]}
-            url={`/contact/messages`}
+            paginationCount={this.state.messagesCount}
+            currentPage={parseInt(window.location.pathname.split("/")[4])}
+            url={`/contact/messages/answered`}
             itemsPerPage={parseInt(this.state.itemsPerPage)}
             activePage={parseInt(this.state.activePage)}
           />
@@ -87,4 +93,4 @@ class Messages extends Component {
   }
 }
 
-export default Messages;
+export default AnsweredMessages;

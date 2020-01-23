@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 const MainStyle = styled.div`
   position: relative;
+  margin-top: -1px;
   .backgroundImg {
     height: 580px;
     background: #78cbc2;

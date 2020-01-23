@@ -14,20 +14,25 @@ const NavbarStyle = styled.div`
     font-size: 1.5em;
     margin-right: 2em;
     text-decoration: none;
-    display: inline-block;
     position: relative;
     font-family: "Dosis", sans-serif;
     cursor: pointer;
+    border-bottom: 5px solid transparent;
+    height: 65px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
-  .cool-link2::after {
+  .active-cool-link2::after,
+  .normal-cool-link2::after {
     content: "";
     position: absolute;
     left: 0;
     display: inline-block;
     height: 1em;
     width: 0;
-    border-bottom: 3px solid;
+    border-bottom: 3px solid #78cbc2;
     margin-top: 10px;
     opacity: 0;
     -webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
@@ -36,11 +41,16 @@ const NavbarStyle = styled.div`
     transform: scale(0, 1);
   }
 
-  .cool-link2:hover::after {
+  .normal-cool-link2:hover::after {
     width: 100%;
     opacity: 1;
+    height: 48px;
     -webkit-transform: scale(1);
     transform: scale(1);
+  }
+
+  .active-cool-link2 {
+    border-bottom: 5px solid #78cbc2 !important;
   }
 `;
 

@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import H2 from "../../ui/H2";
 import P from "../../ui/P";
 import onClickOutside from "react-onclickoutside";
+import axios from "axios";
 
 class Header extends Component {
   constructor() {
@@ -28,6 +29,13 @@ class Header extends Component {
       tag: "",
       toggleSubmenu: false
     };
+  }
+
+  async componentDidMount() {
+    let id = parseInt(localStorage.getItem("userId"));
+    let currentUser = await axios.get(`http://localhost:4000/users/${id}`);
+    console.log("currentUser", currentUser);
+    this.setState({ imageName: currentUser.data.image });
   }
 
   handleClickOutside = evt => {
@@ -97,24 +105,26 @@ class Header extends Component {
             {localStorage.loginToken ? (
               <>
                 <div className="item">
-                  <SVGInline svg={account} />
-                  <Link to="#" onClick={this.toggleSubmenu}>
-                    <P>
-                      {localStorage.userFirstName} {localStorage.userLastName}{" "}
+                  <img
+                    className="accountImage"
+                    src={`/team/${this.state.imageName}`}
+                  />
+                  <P>
+                    {localStorage.userFirstName} {localStorage.userLastName}
+                  </P>
+                  <div className="arrow">
+                    <Link to="#" onClick={this.toggleSubmenu}>
                       <SVGInline svg={downArrow} />
-                      {this.state.toggleSubmenu ? (
-                        <div className="submenuWindow">
-                          <Link to="#">
-                            <p>Change/Set Image</p>
-                          </Link>
-                          <Link to="/changePassword">
-                            <p>Change Password</p>
-                          </Link>
-                        </div>
-                      ) : null}
-                    </P>
-                  </Link>
+                    </Link>
+                  </div>
                 </div>
+                {this.state.toggleSubmenu ? (
+                  <div className="submenuWindow">
+                    <Link to="/changePassword">
+                      <p>Change Password</p>
+                    </Link>
+                  </div>
+                ) : null}
                 <div className="item">
                   <SVGInline svg={pencil} />
                   <Link to={`/users/edit/${localStorage.userId}`}>
@@ -132,7 +142,7 @@ class Header extends Component {
               <>
                 <div className="item">
                   <SVGInline svg={login} />
-                  <Link to="login">
+                  <Link to="/login">
                     <P>Login</P>
                   </Link>
                 </div>

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Switch, Route, Redirect } from "react-router";
+import { Switch, Route, Redirect, Router } from "react-router";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Logout from "../pages/Logout";
@@ -13,6 +13,8 @@ import EditBook from "../pages/Books/EditBook";
 import Search from "../pages/Books/Search";
 import EditUser from "../pages/User/EditUser";
 import Messages from "../pages/Messages/AllMessages";
+import AnsweredMessages from "../pages/Messages/AnsweredMessages";
+
 import SingleMessage from "../pages/Messages/SingleMessage";
 import Verify from "../pages/Verify";
 import ChangePassword from "../pages/ChangePassword";
@@ -20,6 +22,10 @@ import ChangePassword from "../pages/ChangePassword";
 const DefaultSwitch = () => (
   <Switch>
     <Route exact path="/" component={Home} />
+    <Route
+      path="/contact/messages/answered/:paginationNumber/:itemsPerPage"
+      component={AnsweredMessages}
+    />
     <Route
       path="/contact/messages/:paginationNumber/:itemsPerPage"
       component={Messages}

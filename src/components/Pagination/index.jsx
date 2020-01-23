@@ -3,8 +3,8 @@ import PaginationStyle from "./style";
 import { Link } from "react-router-dom";
 
 class Pagination extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       activePage: 1
     };
@@ -18,7 +18,7 @@ class Pagination extends Component {
   }
 
   getPaginationData(number) {
-    window.location.href = `/contact/messages/${number}/${this.state.itemsPerPage}`;
+    window.location.href = `http://localhost:3000${this.props.url}/${number}/${this.props.itemsPerPage}`;
   }
   pagination(c, m) {
     var current = c,
@@ -49,28 +49,23 @@ class Pagination extends Component {
     }
 
     return rangeWithDots.map((value, key) => (
-      <li
-        onClick={() => {
-          this.getPaginationData(key + 1);
-        }}
-        className={
-          parseInt(value) === parseInt(this.state.activePage)
-            ? "active"
-            : "normal"
-        }
-        key={key}
-      >
-        {value}
-      </li>
+      <div key={key}>
+        <li
+          onClick={() => {
+            this.getPaginationData(value);
+          }}
+          className={value === this.props.activePage ? "active" : "normal"}
+          key={key}
+        >
+          {value}
+        </li>
+      </div>
     ));
   }
   render() {
-    let pageNumberArray = [];
     let allMessages = this.props.paginationCount.length;
 
-    for (let i = 0; i < Math.ceil(allMessages / this.state.itemsPerPage); i++) {
-      pageNumberArray.push(i + 1);
-    }
+    console.log("this.props.activePage", this.props.activePage);
 
     return (
       <PaginationStyle>
@@ -85,9 +80,9 @@ class Pagination extends Component {
           <li
             onClick={() => {
               this.getPaginationData(
-                parseInt(window.location.pathname.split("/")[3]) <= 1
-                  ? parseInt(window.location.pathname.split("/")[3])
-                  : parseInt(window.location.pathname.split("/")[3]) - 1
+                parseInt(this.props.activePage) <= 1
+                  ? parseInt(this.props.activePage)
+                  : parseInt(this.props.activePage) - 1
               );
             }}
           >
@@ -95,17 +90,17 @@ class Pagination extends Component {
           </li>
 
           {this.pagination(
-            parseInt(this.state.activePage),
-            Math.ceil(allMessages / this.state.itemsPerPage)
+            parseInt(this.props.activePage),
+            Math.ceil(allMessages / this.props.itemsPerPage)
           )}
 
           <li
             onClick={() => {
               this.getPaginationData(
-                parseInt(window.location.pathname.split("/")[3]) >=
-                  Math.ceil(allMessages / this.state.itemsPerPage)
-                  ? parseInt(window.location.pathname.split("/")[3])
-                  : parseInt(window.location.pathname.split("/")[3]) + 1
+                parseInt(this.props.activePage) >=
+                  Math.ceil(allMessages / this.props.itemsPerPage)
+                  ? parseInt(this.props.activePage)
+                  : parseInt(this.props.activePage) + 1
               );
             }}
           >
@@ -115,7 +110,7 @@ class Pagination extends Component {
             onClick={() => {
               this.getPaginationData(
                 Math.ceil(
-                  this.props.paginationCount.length / this.state.itemsPerPage
+                  this.props.paginationCount.length / this.props.itemsPerPage
                 )
               );
             }}

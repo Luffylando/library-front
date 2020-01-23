@@ -5,12 +5,20 @@ import history from "./history";
 import Main from "./switch/Main";
 import * as serviceWorker from "./serviceWorker";
 import GlobalStyle from "./styles/GlobalStyle";
+import { Provider } from "react-redux";
+import store from "./store";
+import ReactNotification from "react-notifications-component";
+import "react-notifications-component/dist/theme.css";
+import "animate.css";
 
 ReactDOM.render(
-  <Router history={history}>
-    <GlobalStyle />
-    <Main />
-  </Router>,
+  <Provider store={store}>
+    <Router history={history}>
+      <ReactNotification />
+      <GlobalStyle />
+      <Main />
+    </Router>
+  </Provider>,
   document.getElementById("root")
 );
 

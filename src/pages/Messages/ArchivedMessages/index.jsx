@@ -17,7 +17,7 @@ class Messages extends Component {
   }
 
   async componentDidMount() {
-    let messagesCount = await axios.get(`http://localhost:4000/contact`);
+    let messagesCount = await axios.get(`http://localhost:4000/contact/`);
     let paginationNumber = window.location.pathname.split("/")[3];
     let itemsPerPage = window.location.pathname.split("/")[4];
 
@@ -26,9 +26,7 @@ class Messages extends Component {
     );
     this.setState({
       messages: messages.data,
-      messagesCount: messagesCount.data,
-      activePage: paginationNumber,
-      itemsPerPage
+      messagesCount: messagesCount.data
     });
   }
 
@@ -72,13 +70,8 @@ class Messages extends Component {
             "There are no more messages."
           )}
           <Pagination
-            paginationCount={
-              this.state.messagesCount ? this.state.messagesCount : []
-            }
+            paginationCount={this.state.messagesCount}
             currentPage={window.location.pathname.split("/")[3]}
-            url={`/contact/messages`}
-            itemsPerPage={parseInt(this.state.itemsPerPage)}
-            activePage={parseInt(this.state.activePage)}
           />
         </MessageStyle>
         <Footer />

@@ -6,8 +6,7 @@ const SingleBookStyle = styled.div`
   display: flex;
   position: relative;
 
-
-  .deleteBtn{
+  .deleteBtn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -15,7 +14,7 @@ const SingleBookStyle = styled.div`
     top: 10px;
     right: 380px;
     border: 1px solid #000;
-    cursor:pointer;
+    cursor: pointer;
     background: #fff;
     padding: 7px 20px;
     border-radius: 50px;
@@ -55,7 +54,7 @@ const SingleBookStyle = styled.div`
     }
   }
 
-  .editBtn{
+  .editBtn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -200,4 +199,55 @@ const SingleBookStyle = styled.div`
   }
 `;
 
-export default SingleBookStyle;
+const CommentStyle = styled.div`
+  padding: 50px 460px 100px 460px;
+
+  .commentSection {
+    .otherComments {
+      .comment {
+      }
+    }
+  }
+
+  .addComment {
+    display: flex;
+    width: 70%;
+
+    textarea {
+      width: 70%;
+      border: none;
+      border-bottom: 2px solid #000;
+      outline: none;
+      font-size: 16px;
+      height: 30px;
+    }
+
+    .image {
+      height: 40px;
+      width: 40px;
+      border: 2px solid #c4c4c4;
+      border-radius: 50px;
+      margin-right: 15px;
+    }
+  }
+  form {
+    width: 100%;
+  }
+
+  .btnSection {
+    width: 70%;
+    text-align: right;
+
+    button {
+      border: none;
+      background: none;
+      border: 1px solid #000;
+      border-radius: 5px;
+      padding: 5px 10px;
+      margin: 0px 2.5px;
+      cursor: pointer;
+    }
+  }
+`;
+
+export { CommentStyle, SingleBookStyle };

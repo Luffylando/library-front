@@ -110,6 +110,14 @@ const HeaderStyle = styled.div`
         padding: 0px 30px;
         cursor: pointer;
 
+        .accountImage {
+          width: 25px;
+          height: 25px;
+          border-radius: 50%;
+          margin-right: 20px;
+          border: 2px solid #c4c4c4;
+        }
+
         &:last-child {
           border: none;
         }
@@ -120,8 +128,12 @@ const HeaderStyle = styled.div`
           color: #3d5c89;
           display: flex;
           align-items: center;
-
+        }
+        .arrow {
+          display: flex;
+          align-items: center;
           i {
+            margin-left: 15px;
             border: solid black;
             border-width: 0 3px 3px 0;
             display: inline-block;
@@ -131,6 +143,8 @@ const HeaderStyle = styled.div`
               -webkit-transform: rotate(45deg);
             }
           }
+        }
+      }
 
           .submenuWindow {
             position: absolute;
@@ -161,13 +175,14 @@ const HeaderStyle = styled.div`
                 color: #000;
                 font-size: 14px;
                 font-weight: 100;
+
+                span {
+                }
               }
             }
           }
         }
         svg {
-          display: flex;
-          align-items: center;
           width: 20px;
           height: 20px;
           margin-right: 20px;
