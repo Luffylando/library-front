@@ -1,15 +1,20 @@
 import React, { Component } from "react";
 import CommentStyle from "./style";
-import { x, pencil } from "../../assets/icons";
+import { x, pencil, thumbDown, thumbUp } from "../../assets/icons";
 import SVGInline from "react-svg-inline";
 import { hydrate } from "react-dom";
 import { Formik } from "formik";
 export default class Comment extends Component {
   constructor() {
     super();
-    this.state = {};
+    this.state = {
+      comment_id: null
+    };
   }
 
+  componentDidMount() {
+    this.setState({ comment_id: this.props.id });
+  }
   editComment = () => {
     this.props.editCommentFunc();
   };
@@ -75,6 +80,19 @@ export default class Comment extends Component {
           ) : (
             <div className="comment">{this.props.comment}</div>
           )}
+
+          {/* <div className="commentLikes">
+            <div className="up">
+              <SVGInline svg={thumbUp} />
+              <p>Likes</p>
+              <p>{this.props.commentLikesCount}</p>
+            </div>
+            <div className="down">
+              <SVGInline svg={thumbDown} />
+              <p>Dislikes</p>
+              <p>{this.props.commentDislikedCount}</p>
+            </div>
+          </div> */}
         </div>
       </CommentStyle>
     );

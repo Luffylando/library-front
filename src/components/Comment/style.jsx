@@ -19,6 +19,43 @@ const CommentStyle = styled.div`
     .comment {
       word-wrap: break-word;
     }
+
+    .commentLikes {
+      display: flex;
+      padding: 20px 0px;
+      span {
+        height: 24px;
+        margin-right: 10px;
+      }
+
+      .up {
+        display: flex;
+        align-items: center;
+        align-items: space-between;
+        border: 1px solid #000;
+        border-radius: 5px;
+        padding: 1px 5px;
+        margin-right: 5px;
+        p {
+          margin: 0px;
+          margin-right: 10px;        }
+      }
+
+      .down {
+        display: flex;
+        align-items: center;
+        align-items: space-between;
+        border: 1px solid #000;
+        border-radius: 5px;
+
+        padding: 1px 5px;
+        p {
+          margin: 0px;
+          margin-right: 10px;        }
+
+        }
+      }
+    }
   }
   .nameDate {
     display: flex;

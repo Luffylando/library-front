@@ -7,7 +7,13 @@ import Footer from "../../../components/Footer";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import SVGInline from "react-svg-inline";
-import { pencil, backArrow, x } from "../../../assets/icons";
+import {
+  pencil,
+  backArrow,
+  x,
+  thumbUp,
+  thumbDown
+} from "../../../assets/icons";
 import * as moment from "moment";
 import { Formik } from "formik";
 import { store } from "react-notifications-component";
@@ -22,23 +28,53 @@ export default class SingleBook extends Component {
       currentUser: {},
       edit: false,
       editId: null,
-      commentToEdit: {}
+      commentToEdit: {},
+      likesCount: null,
+      dislikesCount: null,
+      check: false,
+      checkType: "",
+      commentLikesCount: 0,
+      commentDislikesCount: 0
     };
   }
 
   async componentDidMount() {
-    let id = this.props.match.params.id;
+    let book_id = this.props.match.params.id;
     let currentUser = await axios.get(
       `http://localhost:4000/users/${parseInt(localStorage.getItem("userId"))}`
     );
-    let book = await axios.get(`http://localhost:4000/books/${id}`);
+    let book = await axios.get(`http://localhost:4000/books/${book_id}`);
     let comments = await axios.get(
-      `http://localhost:4000/comments/bookId/${id}`
+      `http://localhost:4000/comments/bookId/${book_id}`
     );
+
+    let likesCount = await axios.get(
+      `http://localhost:4000/bookLikes/${book_id}/liked`
+    );
+    let dislikesCount = await axios.get(
+      `http://localhost:4000/bookLikes/${book_id}/unliked`
+    );
+    let check = await axios.get(
+      `http://localhost:4000/bookLikes/check/${book_id}/${parseInt(
+        localStorage.getItem("userId")
+      )}`
+    );
+
+    if (check && check.data[0].liked !== "neutral") {
+      this.setState({ check: true });
+      if (check.data[0].liked === "liked") {
+        this.setState({ checkType: "liked" });
+      } else {
+        this.setState({ checkType: "unliked" });
+      }
+    }
+
     this.setState({
       book: book.data,
       comments: comments.data,
-      currentUser: currentUser.data
+      currentUser: currentUser.data,
+      likesCount: likesCount.data,
+      dislikesCount: dislikesCount.data
     });
   }
 
@@ -46,7 +82,6 @@ export default class SingleBook extends Component {
     await axios.delete(`http://localhost:4000/comments/delete/${id}`);
     history.push(`/books/${this.state.book.id}`);
     this.componentDidMount();
-
     // Add Notification Message after Comment has been submited.
     store.addNotification({
       title: "Comment successfully deleted!",
@@ -108,7 +143,94 @@ export default class SingleBook extends Component {
     this.setState({ edit: false });
   };
 
+  likeFunc = async button => {
+    let book_id = this.props.match.params.id;
+    let user_id = localStorage.getItem("userId");
+
+    let check = await axios.get(
+      `http://localhost:4000/bookLikes/check/${book_id}/${user_id}`
+    );
+    let likeId = check.data[0].id;
+    if (check) {
+      if (
+        check.data[0].liked === "neutral" ||
+        check.data[0].liked === "unliked"
+      ) {
+        let liked;
+        if (button === "up") {
+          liked = "liked";
+          this.setState({ check: true, checkType: "liked" });
+        } else {
+          if (check.data[0].liked === "neutral") {
+            liked = "unliked";
+            this.setState({ check: true, checkType: "unliked" });
+          } else {
+            liked = "neutral";
+            this.setState({ check: false, checkType: "" });
+          }
+        }
+        let data = {
+          liked: liked,
+          created: moment().format("YYYY-MM-DD HH:mm:ss")
+        };
+        await axios.put(
+          `http://localhost:4000/bookLikes/update/${likeId}`,
+          data
+        );
+      } else {
+        let liked;
+        if (button === "down") {
+          liked = "unliked";
+          this.setState({ check: true, checkType: "unliked" });
+        } else {
+          liked = "neutral";
+          this.setState({ check: false, checkType: "" });
+        }
+        let data = {
+          liked: liked,
+          created: moment().format("YYYY-MM-DD HH:mm:ss")
+        };
+        await axios.put(
+          `http://localhost:4000/bookLikes/update/${likeId}`,
+          data
+        );
+      }
+    } else {
+      // Add Like or w/e
+      let data = {
+        user_id: user_id,
+        book_id: book_id,
+        liked: "liked",
+        created: moment().format("YYYY-MM-DD HH:mm:ss")
+      };
+      await axios.post(`http://localhost:4000/insert`, data);
+    }
+    this.componentDidMount();
+  };
+
+  borrowBook = async () => {
+    let book_id = this.state.book.id;
+    let user_id = parseInt(localStorage.getItem("userId"));
+    let status = "requested";
+    await axios.post(`http://localhost:4000/borrows/add`, {
+      book_id,
+      user_id,
+      status
+    });
+  };
+  buyBook = async () => {
+    let book_id = this.state.book.id;
+    let user_id = parseInt(localStorage.getItem("userId"));
+    let status = "requested";
+    await axios.post(`http://localhost:4000/orders/add`, {
+      book_id,
+      user_id,
+      status
+    });
+  };
+
   render() {
+    console.log("this.state", this.state);
     return (
       <>
         <Header />
@@ -137,11 +259,65 @@ export default class SingleBook extends Component {
               <p>Author: {this.state.book.author}</p>
               <p>Title: {this.state.book.title}</p>
               <p>Genre: {this.state.book.genre}</p>
-              <p>Quote: Quote...</p>
+              <p>Quote: "{this.state.book.quote}"</p>
+              <div
+                className={
+                  this.state.book.status === 0
+                    ? "availability false"
+                    : "availability true"
+                }
+              >
+                {this.state.book.status === 0 ? "Not Available!" : "Available!"}
+              </div>
+              <div className="thumbs">
+                <div
+                  className={`up `}
+                  onClick={() => {
+                    this.likeFunc("up");
+                  }}
+                >
+                  <SVGInline
+                    className={`liked ${
+                      this.state.check && this.state.checkType === "liked"
+                        ? "success"
+                        : ""
+                    }`}
+                    svg={thumbUp}
+                  ></SVGInline>
+                  <p>Likes</p>
+                  <p>{this.state.likesCount}</p>
+                </div>
+                <div
+                  className={`down `}
+                  onClick={() => {
+                    this.likeFunc("down");
+                  }}
+                >
+                  <SVGInline
+                    className={`dislikes ${
+                      this.state.check && this.state.checkType === "unliked"
+                        ? "danger"
+                        : ""
+                    }`}
+                    svg={thumbDown}
+                  ></SVGInline>
+                  <p>Dislikes</p>
+                  <p>{this.state.dislikesCount}</p>
+                </div>
+              </div>
+              <div className="borrowed">
+                {this.state.book.borrowCount === 0
+                  ? "Be First To Borrow This Book!"
+                  : `This Book was Borrowed ${this.state.book.borrowCount} times.`}
+              </div>
             </div>
             <div className="btns">
-              <button className="reserve">Reserve </button>
-              <button className="order">Order </button>
+              <button onClick={this.borrowBook} className="reserve">
+                Borrow{" "}
+              </button>
+              <button onClick={this.buyBook} className="order">
+                Buy{" "}
+              </button>
             </div>
           </div>
         </SingleBookStyle>
@@ -248,35 +424,48 @@ export default class SingleBook extends Component {
             <div className="otherComments">
               {this.state.comments[0]
                 ? this.state.comments[0].map(value => (
-                    <Comment
-                      key={value.id}
-                      fullName={value.firstName + " " + value.lastName}
-                      date={moment(value.created).format("DD.MM.YYYY HH:mm:ss")}
-                      comment={value.comment}
-                      userId={value.user_id}
-                      image={`/team/${value.image}`}
-                      deleteCommentFunc={() => {
-                        this.deleteComment(value.id);
-                      }}
-                      editCommentFunc={() => {
-                        this.editComment(value.id);
-                      }}
-                      edit={
-                        this.state.editId === value.id ? this.state.edit : null
-                      }
-                      editValue={
-                        this.state.editId === value.id
-                          ? this.state.comment
-                          : this.state.commentToEdit.comment
-                      }
-                      handleEditChange={this.handleEditChange}
-                      handleSubmit={() => {
-                        this.updateComment(value.id);
-                      }}
-                      cancelFunc={() => {
-                        this.cancelFunc();
-                      }}
-                    />
+                    <>
+                      <Comment
+                        key={value.id}
+                        id={value.id}
+                        fullName={value.firstName + " " + value.lastName}
+                        date={moment(value.created).format(
+                          "DD.MM.YYYY HH:mm:ss"
+                        )}
+                        comment={value.comment}
+                        userId={value.user_id}
+                        image={`/team/${value.image}`}
+                        deleteCommentFunc={() => {
+                          this.deleteComment(value.id);
+                        }}
+                        editCommentFunc={() => {
+                          this.editComment(value.id);
+                        }}
+                        edit={
+                          this.state.editId === value.id
+                            ? this.state.edit
+                            : null
+                        }
+                        editValue={
+                          this.state.editId === value.id
+                            ? this.state.comment
+                            : this.state.commentToEdit.comment
+                        }
+                        handleEditChange={this.handleEditChange}
+                        handleSubmit={() => {
+                          this.updateComment(value.id);
+                        }}
+                        cancelFunc={() => {
+                          this.cancelFunc();
+                        }}
+                        commentDislikedCount={5}
+                        commentLikesCount={10}
+                      />
+                      <div className="otherCommentsLikes">
+                        <p onClick={this.otherLikes}>LIKES</p>
+                        <p onClick={this.otherLikes}>DISLIKES</p>
+                      </div>
+                    </>
                   ))
                 : null}
             </div>

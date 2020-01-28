@@ -150,6 +150,7 @@ const SingleBookStyle = styled.div`
   img {
     width: 320px;
     height: 520px;
+    border-radius: 10px;
   }
 
   .bookDesc {
@@ -159,6 +160,87 @@ const SingleBookStyle = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
+    .borrowed {
+      margin: 10px 0px;
+      padding: 5px 0px;
+      font-weight: 600;
+      text-decoration: underline;
+      letter-spacing: 1px;
+    }
+
+    .false {
+      border: 1px solid #980000;
+      border-radius: 5px;
+      padding: 5px 10px;
+      width: fit-content;
+      margin: 10px 0px;
+      color: #980000;
+      font-weight: 600;
+    }
+
+    .true {
+      border: 1px solid #1f3f09;
+      border-radius: 5px;
+      padding: 5px 10px;
+      width: fit-content;
+      margin: 10px 0px;
+      color: #1f3f09;
+      font-weight: 600;
+    }
+
+    .thumbs {
+      display: flex;
+      align-items: center;
+      width: 100px;
+      justify-content: space-between;
+      span {
+        height: 24px;
+      }
+      .up {
+        cursor: pointer;
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+        padding: 3px 10px;
+        border: 1px solid #000;
+        border-radius: 5px;
+
+        svg {
+          margin-right: 5px;
+        }
+        .success {
+          path {
+            fill: green;
+          }
+        }
+        p {
+          margin: 0px 2.5px;
+          font-size: 12px;
+        }
+      }
+      .down {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 3px 5px;
+        border: 1px solid #000;
+        border-radius: 5px;
+        svg {
+          margin-right: 5px;
+        }
+        .danger {
+          path {
+            fill: red;
+          }
+        }
+        p {
+          margin: 0px 2.5px;
+          font-size: 12px;
+        }
+      }
+    }
 
     p {
       font-size: 18px;
@@ -171,6 +253,7 @@ const SingleBookStyle = styled.div`
         margin: 10px 2.5px;
         width: 120px;
         cursor: pointer;
+        outline: none;
       }
       .reserve {
         border: none;
@@ -204,7 +287,16 @@ const CommentStyle = styled.div`
 
   .commentSection {
     .otherComments {
-      .comment {
+      .otherCommentsLikes {
+        display: flex;
+        margin-left: 50px;
+
+        p {
+          border: 1px solid #000;
+          padding: 2px 15px;
+          margin: 10px 5px;
+          cursor: pointer;
+        }
       }
     }
   }
