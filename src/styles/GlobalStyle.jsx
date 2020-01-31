@@ -59,6 +59,37 @@ const GlobalStyle = createGlobalStyle`
       }
   }
 }
+
+
+.custom-ui {
+  border: 2px solid #c4c4c4;
+  border-radius: 10px;
+  padding: 50px 100px;
+
+  h1 {
+    text-align:center;
+  }
+
+  p {
+    text-align:center;
+  }
+
+  .btns {
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    button {
+      margin: 10px 5px;
+      border: none;
+      background: #fff;
+      border: 1px solid #000;
+      border-radius: 5px;
+      width: fit-content;
+      padding: 2.5px 10px;
+      cursor:pointer;
+    }
+  }
+}
 `;
 
 export default GlobalStyle;

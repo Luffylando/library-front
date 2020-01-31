@@ -4,6 +4,7 @@ import { CommentStyle } from "./style";
 import Comment from "../../../components/Comment";
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
+import ConfirmButton from "../../../components/ConfirmButton";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import SVGInline from "react-svg-inline";
@@ -18,11 +19,13 @@ import * as moment from "moment";
 import { Formik } from "formik";
 import { store } from "react-notifications-component";
 import history from "../../../history";
+import { confirmAlert } from "react-confirm-alert"; // Import
 
 export default class SingleBook extends Component {
   constructor() {
     super();
     this.state = {
+      confirm: false,
       book: {},
       comments: [],
       currentUser: {},
@@ -208,29 +211,169 @@ export default class SingleBook extends Component {
     this.componentDidMount();
   };
 
+  submitBorrow = (h1, p) => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui">
+            <h1>{h1}</h1>
+            <p>{p}</p>
+            <div className="btns">
+              <button onClick={onClose}>No</button>
+              <button
+                onClick={() => {
+                  this.borrowBook();
+                  onClose();
+                }}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        );
+      }
+    });
+  };
+  submitBuy = (h1, p) => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui">
+            <h1>{h1}</h1>
+            <p>{p}</p>
+            <div className="btns">
+              <button onClick={onClose}>No</button>
+              <button
+                onClick={() => {
+                  this.buyBook();
+                  onClose();
+                }}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        );
+      }
+    });
+  };
+
   borrowBook = async () => {
     let book_id = this.state.book.id;
     let user_id = parseInt(localStorage.getItem("userId"));
     let status = "requested";
-    await axios.post(`http://localhost:4000/borrows/add`, {
-      book_id,
-      user_id,
-      status
-    });
+    let checkIfAllreadyBorrowed = await axios.get(
+      `http://localhost:4000/borrows/check/${book_id}/${user_id}`
+    );
+    if (checkIfAllreadyBorrowed.data.CheckIfExists[0] === 0) {
+      await axios.post(`http://localhost:4000/borrows/add`, {
+        book_id,
+        user_id,
+        status
+      });
+      store.addNotification({
+        container: "top-right",
+        animationIn: ["animated", "bounceIn"],
+        animationOut: ["animated", "bounceOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: false
+        },
+        content: (
+          <div className="notification-custom-success">
+            <div className="notification-custom-content">
+              <div className="notification-message">
+                <div className="message">
+                  You Successfully Requested Borrowing of This Book.
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      });
+    } else {
+      store.addNotification({
+        container: "top-right",
+        animationIn: ["animated", "bounceIn"],
+        animationOut: ["animated", "bounceOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: false
+        },
+        content: (
+          <div className="notification-custom-success">
+            <div className="notification-custom-content">
+              <div className="notification-message">
+                <div className="message">
+                  You cannot borrow again, Borrow request was already sent.
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      });
+    }
   };
   buyBook = async () => {
     let book_id = this.state.book.id;
     let user_id = parseInt(localStorage.getItem("userId"));
     let status = "requested";
-    await axios.post(`http://localhost:4000/orders/add`, {
-      book_id,
-      user_id,
-      status
-    });
+    let checkIfAllreadyBorrowed = await axios.get(
+      `http://localhost:4000/orders/check/${book_id}/${user_id}`
+    );
+    if (checkIfAllreadyBorrowed.data.CheckIfExists[0] === 0) {
+      await axios.post(`http://localhost:4000/orders/add`, {
+        book_id,
+        user_id,
+        status
+      });
+
+      store.addNotification({
+        container: "top-right",
+        animationIn: ["animated", "bounceIn"],
+        animationOut: ["animated", "bounceOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: false
+        },
+        content: (
+          <div className="notification-custom-success">
+            <div className="notification-custom-content">
+              <div className="notification-message">
+                <div className="message">
+                  You Successfully Requested Buying of This Book.
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      });
+    } else {
+      store.addNotification({
+        container: "top-right",
+        animationIn: ["animated", "bounceIn"],
+        animationOut: ["animated", "bounceOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: false
+        },
+        content: (
+          <div className="notification-custom-success">
+            <div className="notification-custom-content">
+              <div className="notification-message">
+                <div className="message">
+                  You cannot buy again before earlier purchase was not
+                  proccessed.
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      });
+    }
   };
 
   render() {
-    console.log("this.state", this.state);
     return (
       <>
         <Header />
@@ -312,10 +455,23 @@ export default class SingleBook extends Component {
               </div>
             </div>
             <div className="btns">
-              <button onClick={this.borrowBook} className="reserve">
+              <button
+                onClick={() => {
+                  this.submitBorrow(
+                    "Are You Sure",
+                    "You Want to Borrow This Book?"
+                  );
+                }}
+                className="reserve"
+              >
                 Borrow{" "}
               </button>
-              <button onClick={this.buyBook} className="order">
+              <button
+                onClick={() => {
+                  this.submitBuy("Are You Sure", "You Want to Buy This Book?");
+                }}
+                className="order"
+              >
                 Buy{" "}
               </button>
             </div>
@@ -424,7 +580,7 @@ export default class SingleBook extends Component {
             <div className="otherComments">
               {this.state.comments[0]
                 ? this.state.comments[0].map(value => (
-                    <>
+                    <div key={value.id}>
                       <Comment
                         key={value.id}
                         id={value.id}
@@ -465,7 +621,7 @@ export default class SingleBook extends Component {
                         <p onClick={this.otherLikes}>LIKES</p>
                         <p onClick={this.otherLikes}>DISLIKES</p>
                       </div>
-                    </>
+                    </div>
                   ))
                 : null}
             </div>

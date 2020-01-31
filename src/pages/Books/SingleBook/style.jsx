@@ -151,6 +151,9 @@ const SingleBookStyle = styled.div`
     width: 320px;
     height: 520px;
     border-radius: 10px;
+    -webkit-box-shadow: 13px 10px 5px 0px rgba(184, 182, 184, 1);
+    -moz-box-shadow: 13px 10px 5px 0px rgba(184, 182, 184, 1);
+    box-shadow: 13px 10px 5px 0px rgba(184, 182, 184, 1);
   }
 
   .bookDesc {
@@ -177,6 +180,7 @@ const SingleBookStyle = styled.div`
       margin: 10px 0px;
       color: #980000;
       font-weight: 600;
+      background: #f2e9e9;
     }
 
     .true {
@@ -187,6 +191,7 @@ const SingleBookStyle = styled.div`
       margin: 10px 0px;
       color: #1f3f09;
       font-weight: 600;
+      background: #ebf2e9;
     }
 
     .thumbs {
@@ -227,6 +232,7 @@ const SingleBookStyle = styled.div`
         padding: 3px 5px;
         border: 1px solid #000;
         border-radius: 5px;
+
         svg {
           margin-right: 5px;
         }

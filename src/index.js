@@ -10,6 +10,7 @@ import store from "./store";
 import ReactNotification from "react-notifications-component";
 import "react-notifications-component/dist/theme.css";
 import "animate.css";
+import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 
 ReactDOM.render(
   <Provider store={store}>
