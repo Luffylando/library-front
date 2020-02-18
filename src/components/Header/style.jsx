@@ -40,7 +40,7 @@ const HeaderStyle = styled.div`
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        padding: 0px 20px;
+        padding: 0px 10px 0px 20px;
         flex-basis: 70%;
         margin-right: 40px;
         border: 1px solid #ddd;
@@ -61,26 +61,23 @@ const HeaderStyle = styled.div`
             border: none;
             padding-left: 20px;
             height: 55px;
-            outline: none;
+            outline:none;
           }
           .sortBy {
             display: flex;
             align-items: center;
 
-            select {
-              outline: none;
-              font-size: 14px;
-              border: none;
-              color: #4c4949;
-              background: none;
+            .selectInput {
               width: 150px;
-              border-left: 1px solid #d4d4d4;
-              height: 50px;
-              margin-right: 20px;
-              padding: 0px 10px;
-              option {
-                padding: 15px 0px;
-              }
+              margin-right: 10px;
+
+           .selectField__control{
+             outline-color: red;
+              border:none;
+           }
+           .selectField__dropdown-indicator{
+             padding-right: 0px;
+           }
             }
           }
           .goButton {

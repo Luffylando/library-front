@@ -8,6 +8,8 @@ import FooterSection from "../../components/FooterSection";
 
 export default class Footer extends Component {
   render() {
+    var date = new Date();
+    var currentYear = date.getFullYear();
     return (
       <FooterStyle>
         <div className="mainSection">
@@ -54,7 +56,7 @@ export default class Footer extends Component {
         </div>
         <div className="privacySection">
           <div className="privacy">
-            Luffy’s Library - All Rights Reserved - 2019
+            Luffy’s Library - All Rights Reserved - {currentYear}
           </div>
           <div className="socialIcons">
             <SVGInline svg={fb} />

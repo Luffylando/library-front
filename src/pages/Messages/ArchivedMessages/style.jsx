@@ -11,6 +11,16 @@ const MessageStyle = styled.div`
 
   table {
     margin-top: 60px;
+
+    .actionBtn {
+      display: flex;
+      justify-content: center;
+    }
+  }
+  .linkBtns {
+    margin-bottom: 50px;
+    display: flex;
+    justify-content: flex-end;
   }
 `;
 

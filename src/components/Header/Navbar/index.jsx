@@ -97,6 +97,21 @@ class Navbar extends Component {
             </Link>
           </li>
         ) : null}
+        <li>
+          <Link
+            to="/events"
+            className={
+              this.props.setActiveMenu.activeMenu === "Events"
+                ? "active-cool-link2"
+                : "normal-cool-link2"
+            }
+            onClick={() => {
+              this.changeActiveMenu("Events");
+            }}
+          >
+            Events
+          </Link>
+        </li>
       </NavbarStyle>
     );
   }

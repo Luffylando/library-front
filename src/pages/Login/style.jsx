@@ -49,7 +49,6 @@ const LoginStyle = styled.div`
       background: transparent;
       transition: all 1s ease-in;
       ::placeholder {
-        color: #000;
       }
     }
 
@@ -84,11 +83,13 @@ const LoginStyle = styled.div`
 
     .errorMsg {
       position: absolute;
-      width: 300px;
-      bottom: -70px;
+      left: auto;
+      right: auto;
+      top: 50px;
+      width: 310px;
       text-align: center;
       color: #de0a66;
-      padding: 10px 0px;
+      padding: 10px 20px;
       border: 1px solid #de0a66;
       border-radius: 3px;
       background: #f9e3ec;

@@ -2,10 +2,19 @@ import React, { Component } from "react";
 import ContactStyle from "./style";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import InputValidationField from "../../components/InputValidationField";
+import TextareaValidationField from "../../components/TextareaValidationField";
+import Button from "../../components/Button";
+
 import { Formik } from "formik";
 import axios from "axios";
+import { store } from "react-notifications-component";
+import ContactSchema from "./validation";
 
 export default class Contact extends Component {
+  state = {
+    validate: false
+  };
   render() {
     return (
       <>
@@ -18,8 +27,8 @@ export default class Contact extends Component {
               email: "",
               message: ""
             }}
+            validationSchema={this.state.validate ? ContactSchema : null}
             onSubmit={async (values, { setSubmitting }) => {
-              console.log("message", values);
               try {
                 let data = {
                   firstName: values.firstName,
@@ -31,6 +40,35 @@ export default class Contact extends Component {
                   "http://localhost:4000/contact/formMessage",
                   data
                 );
+
+                // Success Message
+
+                store.addNotification({
+                  title: "Message successfully sent!",
+                  message: `message"`,
+                  type: "danger",
+                  insert: "top",
+                  container: "top-right",
+                  animationIn: ["animated", "bounceIn"],
+                  animationOut: ["animated", "bounceOut"],
+                  dismiss: {
+                    duration: 5000,
+                    onScreen: false
+                  },
+                  content: (
+                    <div className="notification-custom-success">
+                      <div className="notification-custom-content">
+                        <div className="notification-message">
+                          <div className="message-header">
+                            Message Successfully Sent.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                });
+
+                // End of Success Message
 
                 values.firstName = "";
                 values.lastName = "";
@@ -49,6 +87,8 @@ export default class Contact extends Component {
               errors,
               touched,
               handleChange,
+              validateField,
+              validateForm,
               handleBlur,
               handleSubmit,
               isSubmitting
@@ -59,70 +99,85 @@ export default class Contact extends Component {
                   <h1> Contact us </h1>
                   <div className="row">
                     <div className="inputDiv">
-                      <label>First Name</label>
-                      <input
-                        placeholder="First Name"
+                      <InputValidationField
+                        label="First Name"
                         type="text"
                         name="firstName"
+                        placehodler="First Name"
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values.firstName}
+                        errors={errors.firstName}
+                        touched={touched.firstName}
                       />
-                      <div className="error">
-                        {errors.firstName &&
-                          touched.firstName &&
-                          errors.firstName}
-                      </div>
                     </div>
                     <div className="inputDiv">
-                      <label>Last Name</label>
-                      <input
-                        placeholder="Last Name"
+                      <InputValidationField
+                        label="Last Name"
                         type="text"
                         name="lastName"
+                        placehodler="Last Name"
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values.lastName}
+                        errors={errors.lastName}
+                        touched={touched.lastName}
                       />
-                      <div className="error">
-                        {errors.lastName && touched.lastName && errors.lastName}
-                      </div>
                     </div>
                   </div>
+
                   <div className="inputDiv">
-                    <label>Email</label>
-                    <input
-                      placeholder="Your Email"
+                    <InputValidationField
+                      label="Email"
                       type="text"
                       name="email"
+                      placehodler="Email"
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.email}
+                      errors={errors.email}
+                      touched={touched.email}
                     />
-                    <div className="error">
-                      {errors.email && touched.email && errors.email}
-                    </div>
                   </div>
                   <div className="inputDiv">
-                    <label>Message:</label>
-                    <textarea
-                      type="text"
+                    <TextareaValidationField
+                      label="Message"
                       name="message"
+                      placehodler="Message"
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.message}
-                      placeholder="Message"
-                    >
-                      :
-                    </textarea>
-                    <div className="error">
-                      {errors.message && touched.message && errors.message}
-                    </div>
+                      errors={errors.message}
+                      touched={touched.message}
+                    />
                   </div>
                   <div className="submitBtn">
-                    <button type="submit" disabled={isSubmitting}>
-                      Submit
-                    </button>
+                    <Button
+                      type={"submit"}
+                      onClick={() => {
+                        validateForm().then(() =>
+                          this.setState({ validate: true })
+                        );
+
+                        setTimeout(() => {
+                          this.setState({ validate: false });
+                        }, 500);
+                      }}
+                      btnText={"Submit"}
+                      bgColor={"#F15925"}
+                      txtColor={"#fff"}
+                      fWeight={"500"}
+                      width={"300px"}
+                      margin={"50px 10px 30px 10px"}
+                      letterSpacing={"1px"}
+                      padding={"20px 20px"}
+                      bRadius={"50px"}
+                      hoverBg={"#fff"}
+                      hoverBorder={"1px solid #F15925"}
+                      hoverTxt={"#F15925"}
+                      transition={"all 0.3s"}
+                      disabled={isSubmitting}
+                    />
                   </div>
                 </form>
                 <div className="contactInfo">

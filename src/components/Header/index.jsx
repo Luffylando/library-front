@@ -16,6 +16,40 @@ import H2 from "../../ui/H2";
 import P from "../../ui/P";
 import onClickOutside from "react-onclickoutside";
 import axios from "axios";
+import Button from "../Button";
+import Select from "react-select";
+
+const options = [
+  { value: "title", label: "Title" },
+  { value: "author", label: "Author" },
+  { value: "genre", label: "Genre" }
+];
+
+const customStyles = {
+  option: (styles, state) => ({
+    ...styles,
+    color: state.isSelected ? "#FFF" : styles.color,
+    backgroundColor: state.isSelected ? "#F3969A" : styles.color,
+    borderBottom: "1px solid rgba(0, 0, 0, 0.125)",
+    border: "none",
+
+    "&:hover": {
+      color: "#FFF",
+      backgroundColor: "#F3969A",
+      border: "none"
+    },
+    height: "fit-content"
+  }),
+  control: (styles, state) => ({
+    ...styles,
+    boxShadow: "none",
+    borderColor: "none",
+    border: "none",
+    "&:hover": {
+      borderColor: state.isFocused ? "#D0EAE2" : "#CED4DA"
+    }
+  })
+};
 
 class Header extends Component {
   constructor() {
@@ -27,14 +61,14 @@ class Header extends Component {
       quote: "",
       keyword: "",
       tag: "",
-      toggleSubmenu: false
+      toggleSubmenu: false,
+      selectedOption: null
     };
   }
 
   async componentDidMount() {
     let id = parseInt(localStorage.getItem("userId"));
     let currentUser = await axios.get(`http://localhost:4000/users/${id}`);
-    console.log("currentUser", currentUser);
     this.setState({ imageName: currentUser.data.image });
   }
 
@@ -49,7 +83,7 @@ class Header extends Component {
   };
 
   searchClick = () => {
-    let tag = this.state.tag === "" ? "tag" : this.state.tag;
+    let tag = this.state.tag.value === "" ? "tag" : this.state.tag.value;
     let keyword = this.state.keyword === "" ? "keyword" : this.state.keyword;
     window.location.href = `/books/search/${keyword}/${tag}`;
   };
@@ -57,6 +91,12 @@ class Header extends Component {
   toggleSubmenu = () => {
     this.setState({ toggleSubmenu: !this.state.toggleSubmenu });
   };
+
+  handleSelectChange = selectedOption => {
+    console.log("sele", selectedOption);
+    this.setState({ selectedOption, tag: selectedOption });
+  };
+
   render() {
     return (
       <HeaderStyle>
@@ -82,22 +122,31 @@ class Header extends Component {
                   placeholder="Search"
                 ></input>
                 <div className="sortBy">
-                  <select
-                    name="tag"
-                    onChange={this.setValue}
-                    defaultValue="Sort By:"
-                  >
-                    <option value="">Search By:</option>
-                    <option value="title">title</option>
-                    <option value="author">author</option>
-                    <option value="genre">genre</option>
-                    <option value="quotes">quote</option>
-                  </select>
+                  <Select
+                    styles={customStyles}
+                    value={this.state.selectedOption}
+                    onChange={this.handleSelectChange}
+                    options={options}
+                    className="selectInput"
+                    classNamePrefix="selectField"
+                    placeholder="Sort By:"
+                    defaultValue=""
+                  />
                 </div>
-
-                <button onClick={this.searchClick} className="goButton">
-                  Go
-                </button>
+                <Button
+                  onClick={this.searchClick}
+                  btnBorder={"none"}
+                  btnText={"Go"}
+                  fWeight={"400"}
+                  bRadius={"25px"}
+                  padding={"10px 25px"}
+                  margin={"10px 5"}
+                  width={"fit-content"}
+                  height={"45px"}
+                  bgColor={"#f15922"}
+                  txtColor={"#fff"}
+                  transition={"none"}
+                />
               </div>
             </div>
           </div>
@@ -105,10 +154,14 @@ class Header extends Component {
             {localStorage.loginToken ? (
               <>
                 <div className="item">
-                  <img
+                  {/* <img
                     className="accountImage"
                     src={`/team/${this.state.imageName}`}
-                  />
+                  /> */}
+
+                  <Link to="#" onClick={this.toggleSubmenu}>
+                    <SVGInline svg={account} />
+                  </Link>
                   <P>
                     {localStorage.userFirstName} {localStorage.userLastName}
                   </P>

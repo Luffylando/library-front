@@ -78,22 +78,6 @@ const MainStyle = styled.div`
           }
         }
       }
-      button {
-        margin-top: 40px;
-        width: 200px;
-        border: none;
-        background: #f15922;
-        border-radius: 50px;
-        padding: 15px 25px;
-        cursor: pointer;
-
-        p {
-          color: #fff;
-          font-size: 18px;
-          font-weight: bold;
-          letter-spacing: 1.5px;
-        }
-      }
     }
 
     img {

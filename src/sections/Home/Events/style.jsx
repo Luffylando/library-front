@@ -15,6 +15,7 @@ const EventsStyle = styled.div`
       font-size: 30px;
       font-weight: bold;
       text-align: center;
+      font-style: italic;
     }
   }
 
@@ -38,7 +39,7 @@ const EventsStyle = styled.div`
           justify-content: center;
           padding: 15px 25px;
           margin: 15px 0px;
-          border-left: 5px solid orange;
+          border-left: 5px solid #f15925;
 
           .dateNumber {
             font-size: 32px;

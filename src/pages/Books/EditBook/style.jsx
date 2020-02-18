@@ -32,13 +32,31 @@ const EditBookStyle = styled.div`
         padding-left: 10px;
       }
     }
+    .textareaDiv {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 25px;
+
+      label {
+        font-size: 16px;
+        margin-bottom: 5px;
+      }
+      textarea {
+        height: 120px;
+        border: none;
+        border-bottom: 1px solid #d4d4d4;
+        font-size: 20px;
+        outline: none;
+        padding-left: 10px;
+      }
+    }
 
     .selectAndFile {
       display: flex;
       align-items: center;
       justify-content: flex-start;
       margin-bottom: 30px;
-      position:relative;
+      position: relative;
 
       .selectDiv {
         width: 49%;
@@ -68,8 +86,6 @@ const EditBookStyle = styled.div`
         display: flex;
         flex-direction: column;
 
-
-
         p {
           margin: 0px;
           font-size: 16px;
@@ -96,24 +112,24 @@ const EditBookStyle = styled.div`
       }
     }
 
-.editImage {
-  position:absolute;
-  top: 0px;
-  right: 50px;
-  display: flex;
-  flex-direction:column;
+    .editImage {
+      position: absolute;
+      top: 0px;
+      right: 50px;
+      display: flex;
+      flex-direction: column;
 
-  label {
-    margin-bottom: 5px;
-  }
+      label {
+        margin-bottom: 5px;
+      }
 
-    .chosenImg {
-          height: 150px;
-          width: 100px;
-        }
-}
+      .chosenImg {
+        height: 150px;
+        width: 100px;
+      }
+    }
 
-    .submitBtn {
+    /* .submitBtn {
       width: 100%;
       text-align: center;
       margin-top: 100px;
@@ -127,7 +143,7 @@ const EditBookStyle = styled.div`
         background: #559564;
         font-weight: bold;
       }
-    }
+    } */
   }
 `;
 

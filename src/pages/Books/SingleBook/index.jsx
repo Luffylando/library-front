@@ -4,7 +4,7 @@ import { CommentStyle } from "./style";
 import Comment from "../../../components/Comment";
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
-import ConfirmButton from "../../../components/ConfirmButton";
+import Button from "../../../components/Button";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import SVGInline from "react-svg-inline";
@@ -20,6 +20,7 @@ import { Formik } from "formik";
 import { store } from "react-notifications-component";
 import history from "../../../history";
 import { confirmAlert } from "react-confirm-alert"; // Import
+import defaultBook from "../../../assets/imgs/books/defaultBook.png";
 
 export default class SingleBook extends Component {
   constructor() {
@@ -32,6 +33,8 @@ export default class SingleBook extends Component {
       edit: false,
       editId: null,
       commentToEdit: {},
+      likesCount: 0,
+      dislikesCount: 0,
       likesCount: null,
       dislikesCount: null,
       check: false,
@@ -43,9 +46,33 @@ export default class SingleBook extends Component {
 
   async componentDidMount() {
     let book_id = this.props.match.params.id;
-    let currentUser = await axios.get(
-      `http://localhost:4000/users/${parseInt(localStorage.getItem("userId"))}`
-    );
+
+    if (localStorage.getItem("userId")) {
+      let currentUser = await axios.get(
+        `http://localhost:4000/users/${parseInt(
+          localStorage.getItem("userId")
+        )}`
+      );
+      let check = await axios.get(
+        `http://localhost:4000/bookLikes/check/${book_id}/${parseInt(
+          localStorage.getItem("userId")
+        )}`
+      );
+
+      if (check.data.length === 0) {
+      } else {
+        if (check && check.data[0].liked !== "neutral") {
+          this.setState({ check: true });
+          if (check.data[0].liked === "liked") {
+            this.setState({ checkType: "liked" });
+          } else {
+            this.setState({ checkType: "unliked" });
+          }
+        }
+      }
+
+      this.setState({ currentUser: currentUser.data });
+    }
     let book = await axios.get(`http://localhost:4000/books/${book_id}`);
     let comments = await axios.get(
       `http://localhost:4000/comments/bookId/${book_id}`
@@ -54,30 +81,17 @@ export default class SingleBook extends Component {
     let likesCount = await axios.get(
       `http://localhost:4000/bookLikes/${book_id}/liked`
     );
+    likesCount = likesCount.data[0];
     let dislikesCount = await axios.get(
       `http://localhost:4000/bookLikes/${book_id}/unliked`
     );
-    let check = await axios.get(
-      `http://localhost:4000/bookLikes/check/${book_id}/${parseInt(
-        localStorage.getItem("userId")
-      )}`
-    );
-
-    if (check && check.data[0].liked !== "neutral") {
-      this.setState({ check: true });
-      if (check.data[0].liked === "liked") {
-        this.setState({ checkType: "liked" });
-      } else {
-        this.setState({ checkType: "unliked" });
-      }
-    }
+    dislikesCount = dislikesCount.data[0];
 
     this.setState({
       book: book.data,
       comments: comments.data,
-      currentUser: currentUser.data,
-      likesCount: likesCount.data,
-      dislikesCount: dislikesCount.data
+      likesCount: likesCount,
+      dislikesCount: dislikesCount
     });
   }
 
@@ -124,9 +138,21 @@ export default class SingleBook extends Component {
     });
   };
 
-  deleteBook = async () => {
+  unarchiveBook = async () => {
+    // We will not delete the book, we will only mark it as unarchived, so it shows up in catalog.
     let id = this.props.match.params.id;
-    await axios.delete(`http://localhost:4000/books/delete/${id}`);
+    await axios.put(`http://localhost:4000/books/edit/${id}`, {
+      archived: false
+    });
+    window.location.href = "/catalog";
+  };
+
+  deleteBook = async () => {
+    // We will not delete the book, we will only mark it as archived, so it dont show up in catalog.
+    let id = this.props.match.params.id;
+    await axios.put(`http://localhost:4000/books/edit/${id}`, {
+      archived: true
+    });
     window.location.href = "/catalog";
   };
 
@@ -153,8 +179,17 @@ export default class SingleBook extends Component {
     let check = await axios.get(
       `http://localhost:4000/bookLikes/check/${book_id}/${user_id}`
     );
-    let likeId = check.data[0].id;
-    if (check) {
+
+    if (check.data.length === 0) {
+      let data = {
+        user_id: user_id,
+        book_id: book_id,
+        liked: button === "up" ? "liked" : "unliked",
+        created: moment().format("YYYY-MM-DD HH:mm:ss")
+      };
+      await axios.post(`http://localhost:4000/bookLikes/insert`, data);
+    } else if (check) {
+      let likeId = check.data[0].id;
       if (
         check.data[0].liked === "neutral" ||
         check.data[0].liked === "unliked"
@@ -198,16 +233,8 @@ export default class SingleBook extends Component {
           data
         );
       }
-    } else {
-      // Add Like or w/e
-      let data = {
-        user_id: user_id,
-        book_id: book_id,
-        liked: "liked",
-        created: moment().format("YYYY-MM-DD HH:mm:ss")
-      };
-      await axios.post(`http://localhost:4000/insert`, data);
     }
+
     this.componentDidMount();
   };
 
@@ -378,102 +405,173 @@ export default class SingleBook extends Component {
       <>
         <Header />
         <SingleBookStyle>
-          <Link className="backBtn" to="/catalog">
-            <p>Go Back</p> <SVGInline svg={backArrow} />
-          </Link>
-          <Link className="editBtn" to={`/books/edit/${this.state.book.id}`}>
-            <p>Edit Book</p> <SVGInline svg={pencil} />
-          </Link>
-          <div
-            className="deleteBtn"
-            onClick={() => {
-              this.deleteBook();
-            }}
-          >
-            <p>Delete Book</p> <SVGInline svg={x} />
-          </div>
-          <img
-            src={`../books/${this.state.book.image}`}
-            alt={`${this.state.book.image}${this.state.book.id}`}
-          />
-          <div className="bookDesc">
-            <div className="desc">
-              <p>Id: {this.state.book.id}</p>
-              <p>Author: {this.state.book.author}</p>
-              <p>Title: {this.state.book.title}</p>
-              <p>Genre: {this.state.book.genre}</p>
-              <p>Quote: "{this.state.book.quote}"</p>
+          <div className="topBtns">
+            <div className="goBack">
+              <Link className="backBtn" to="/catalog">
+                <Button
+                  bgColor={"#3F5D88"}
+                  width={"200px"}
+                  padding={"10px 0px"}
+                  margin={"10px 0px"}
+                  fWeight={"600"}
+                  bRadius={"50px"}
+                  txtColor={"#fff"}
+                  hoverBg={"#fff"}
+                  hoverTxt={"#3F5D88"}
+                  transition={"all 0.3s"}
+                  hoverBorder={"1px solid #3F5D88"}
+                  btnText={"Go Back"}
+                ></Button>
+              </Link>
+            </div>
+            <div className="bookBtns">
+              <Link
+                className="editBtn"
+                to={`/books/edit/${this.state.book.id}`}
+              >
+                <Button
+                  bgColor={"#3F5D88"}
+                  width={"200px"}
+                  padding={"10px 0px"}
+                  margin={"10px 5px"}
+                  fWeight={"600"}
+                  bRadius={"50px"}
+                  txtColor={"#fff"}
+                  hoverBg={"#fff"}
+                  hoverTxt={"#3F5D88"}
+                  transition={"all 0.3s"}
+                  hoverBorder={"1px solid #3F5D88"}
+                  btnText={"Edit Book"}
+                ></Button>
+              </Link>
               <div
-                className={
-                  this.state.book.status === 0
-                    ? "availability false"
-                    : "availability true"
+                className="deleteBtn"
+                onClick={
+                  this.state.book.archived === 1
+                    ? () => {
+                        this.unarchiveBook();
+                      }
+                    : () => {
+                        this.deleteBook();
+                      }
                 }
               >
-                {this.state.book.status === 0 ? "Not Available!" : "Available!"}
-              </div>
-              <div className="thumbs">
-                <div
-                  className={`up `}
-                  onClick={() => {
-                    this.likeFunc("up");
-                  }}
-                >
-                  <SVGInline
-                    className={`liked ${
-                      this.state.check && this.state.checkType === "liked"
-                        ? "success"
-                        : ""
-                    }`}
-                    svg={thumbUp}
-                  ></SVGInline>
-                  <p>Likes</p>
-                  <p>{this.state.likesCount}</p>
-                </div>
-                <div
-                  className={`down `}
-                  onClick={() => {
-                    this.likeFunc("down");
-                  }}
-                >
-                  <SVGInline
-                    className={`dislikes ${
-                      this.state.check && this.state.checkType === "unliked"
-                        ? "danger"
-                        : ""
-                    }`}
-                    svg={thumbDown}
-                  ></SVGInline>
-                  <p>Dislikes</p>
-                  <p>{this.state.dislikesCount}</p>
-                </div>
-              </div>
-              <div className="borrowed">
-                {this.state.book.borrowCount === 0
-                  ? "Be First To Borrow This Book!"
-                  : `This Book was Borrowed ${this.state.book.borrowCount} times.`}
+                <Button
+                  bgColor={"#3F5D88"}
+                  width={"200px"}
+                  padding={"10px 5px"}
+                  margin={"10px 0px"}
+                  fWeight={"600"}
+                  bRadius={"50px"}
+                  txtColor={"#fff"}
+                  hoverBg={"#fff"}
+                  hoverTxt={"#3F5D88"}
+                  transition={"all 0.3s"}
+                  hoverBorder={"1px solid #3F5D88"}
+                  btnText={
+                    this.state.book.archived === 1
+                      ? "Unarchive Book"
+                      : "Delete Book"
+                  }
+                ></Button>
               </div>
             </div>
-            <div className="btns">
-              <button
-                onClick={() => {
-                  this.submitBorrow(
-                    "Are You Sure",
-                    "You Want to Borrow This Book?"
-                  );
-                }}
-                className="reserve"
-              >
-                Borrow{" "}
-              </button>
-              <button
-                onClick={() => {
-                  this.submitBuy("Are You Sure", "You Want to Buy This Book?");
-                }}
-                className="order"
-              >
-                Buy{" "}
-              </button>
+          </div>
+
+          <div className="book">
+            <img
+              src={
+                this.state.book.image
+                  ? `../books/${this.state.book.image}`
+                  : defaultBook
+              }
+              alt={`${this.state.book.image}${this.state.book.id}`}
+            />
+            <div className="bookDesc">
+              <div className="desc">
+                <p>Author: {this.state.book.author}</p>
+                <p>Title: {this.state.book.title}</p>
+                <p>Genre: {this.state.book.genre}</p>
+                <p>Quote: "{this.state.book.quote}"</p>
+                <div
+                  className={
+                    this.state.book.status === 0
+                      ? "availability false"
+                      : "availability true"
+                  }
+                >
+                  {this.state.book.status === 0
+                    ? "Not Available!"
+                    : "Available!"}
+                </div>
+                <div className="thumbs">
+                  <div
+                    className={`up `}
+                    onClick={() => {
+                      this.likeFunc("up");
+                    }}
+                  >
+                    <SVGInline
+                      className={`liked ${
+                        this.state.check && this.state.checkType === "liked"
+                          ? "success"
+                          : ""
+                      }`}
+                      svg={thumbUp}
+                    ></SVGInline>
+                    <p>Likes</p>
+                    <p>{this.state.likesCount ? this.state.likesCount : 0}</p>
+                  </div>
+                  <div
+                    className={`down `}
+                    onClick={() => {
+                      this.likeFunc("down");
+                    }}
+                  >
+                    <SVGInline
+                      className={`dislikes ${
+                        this.state.check && this.state.checkType === "unliked"
+                          ? "danger"
+                          : ""
+                      }`}
+                      svg={thumbDown}
+                    ></SVGInline>
+                    <p>Dislikes</p>
+                    <p>
+                      {this.state.dislikesCount ? this.state.dislikesCount : 0}
+                    </p>
+                  </div>
+                </div>
+                <div className="borrowed">
+                  {this.state.book.borrowCount === 0
+                    ? "Be First To Borrow This Book!"
+                    : `This Book was Borrowed ${this.state.book.borrowCount} times.`}
+                </div>
+              </div>
+              <div className="btns">
+                <button
+                  onClick={() => {
+                    this.submitBorrow(
+                      "Are You Sure",
+                      "You Want to Borrow This Book?"
+                    );
+                  }}
+                  className="reserve"
+                >
+                  Borrow{" "}
+                </button>
+                <button
+                  onClick={() => {
+                    this.submitBuy(
+                      "Are You Sure",
+                      "You Want to Buy This Book?"
+                    );
+                  }}
+                  className="order"
+                >
+                  Buy{" "}
+                </button>
+              </div>
             </div>
           </div>
         </SingleBookStyle>
@@ -565,10 +663,38 @@ export default class SingleBook extends Component {
                           onBlur={handleBlur}
                         ></textarea>
                         <div className="btnSection">
-                          <button>Cancel</button>
-                          <button type="submit" disabled={isSubmitting}>
-                            Submit
-                          </button>
+                          <Button
+                            bgColor={"#3F5D88"}
+                            width={"90px"}
+                            padding={"5px 0px"}
+                            margin={"10px 5px"}
+                            fWeight={"300"}
+                            fSize={"12px"}
+                            bRadius={"10px"}
+                            txtColor={"#fff"}
+                            hoverBg={"#fff"}
+                            hoverTxt={"#3F5D88"}
+                            transition={"all 0.3s"}
+                            hoverBorder={"1px solid #3F5D88"}
+                            btnText={"Cancel"}
+                          ></Button>
+                          <Button
+                            bgColor={"#3F5D88"}
+                            width={"90px"}
+                            padding={"5px 0px"}
+                            margin={"10px 5px"}
+                            fWeight={"300"}
+                            fSize={"12px"}
+                            bRadius={"10px"}
+                            txtColor={"#fff"}
+                            hoverBg={"#fff"}
+                            hoverTxt={"#3F5D88"}
+                            transition={"all 0.3s"}
+                            hoverBorder={"1px solid #3F5D88"}
+                            btnText={"Submit"}
+                            type={"submit"}
+                            disabled={isSubmitting}
+                          ></Button>
                         </div>
                       </form>
                     )}
@@ -614,13 +740,7 @@ export default class SingleBook extends Component {
                         cancelFunc={() => {
                           this.cancelFunc();
                         }}
-                        commentDislikedCount={5}
-                        commentLikesCount={10}
                       />
-                      <div className="otherCommentsLikes">
-                        <p onClick={this.otherLikes}>LIKES</p>
-                        <p onClick={this.otherLikes}>DISLIKES</p>
-                      </div>
                     </div>
                   ))
                 : null}

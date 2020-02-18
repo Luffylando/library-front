@@ -5,37 +5,85 @@ import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
 import Pagination from "../../../components/Pagination";
 import axios from "axios";
+import Button from "../../../components/Button";
 
-class Messages extends Component {
+class ArchivedMessages extends Component {
   constructor(props) {
     super(props);
     this.state = {
       messagesCount: [],
       messages: [],
-      paginationNumber: 1
+      activePage: 1
     };
   }
 
   async componentDidMount() {
-    let messagesCount = await axios.get(`http://localhost:4000/contact/`);
-    let paginationNumber = window.location.pathname.split("/")[3];
-    let itemsPerPage = window.location.pathname.split("/")[4];
+    let messagesCount = await axios.get(
+      `http://localhost:4000/contact/messages/archived`
+    );
+    let activePage = window.location.pathname.split("/")[4];
+    let itemsPerPage = window.location.pathname.split("/")[5];
 
     let messages = await axios.get(
-      `http://localhost:4000/contact/messages/${paginationNumber}/${itemsPerPage}`
+      `http://localhost:4000/contact/messages/archived/${activePage}/${itemsPerPage}`
     );
     this.setState({
       messages: messages.data,
-      messagesCount: messagesCount.data
+      messagesCount: messagesCount.data,
+      itemsPerPage,
+      activePage
     });
   }
 
+  unarchiveMessage = async id => {
+    let data = { archived: null };
+    await axios.put(`http://localhost:4000/contact/message/update/${id}`, data);
+    this.componentDidMount();
+  };
   render() {
     return (
       <>
         <Header />
         <MessageStyle>
-          <h1>Contact Messages</h1>
+          <h1>Archived Contact Messages</h1>
+          <div className="linkBtns">
+            <Link to={"/contact/messages/1/5"}>
+              <Button
+                bgColor={"#fff"}
+                width={"180px"}
+                padding={"10px 10px"}
+                margin={"5px 10px 5px 0px"}
+                fWeight={"600"}
+                btnBorder={"1px solid gray"}
+                fSize={"14px"}
+                bRadius={"5px"}
+                txtColor={"#000"}
+                hoverBg={"#666666"}
+                hoverTxt={"#fff"}
+                transition={"all 0.3s"}
+                hoverBorder={"1px solid #fff"}
+                btnText={"All Messages"}
+              ></Button>{" "}
+            </Link>
+            <Link to={"/contact/messages/answered/1/5"}>
+              <Button
+                bgColor={"#fff"}
+                width={"180px"}
+                padding={"10px 10px"}
+                margin={"5px 0px"}
+                fWeight={"600"}
+                btnBorder={"1px solid gray"}
+                fSize={"14px"}
+                bRadius={"5px"}
+                txtColor={"#000"}
+                hoverBg={"#666666"}
+                hoverTxt={"#fff"}
+                transition={"all 0.3s"}
+                hoverBorder={"1px solid #fff"}
+                btnText={"Answered Messages"}
+              ></Button>
+            </Link>
+          </div>
           {this.state.messages.length !== 0 ? (
             <table className="ui celled table">
               <thead className="">
@@ -56,11 +104,26 @@ class Messages extends Component {
                     <td className="">{value.email}</td>
                     <td className="">{value.message}</td>
                     <td className="">status to add...</td>
-                    <td className="center aligned">
-                      <Link to={`/contact/messages/${value.id}`}>
-                        <button className="ui green button">Answer</button>
-                      </Link>
-                      <button className="ui red button">Archive</button>
+                    <td className="actionBtn">
+                      <Button
+                        bgColor={"#3F5C88"}
+                        width={"180px"}
+                        padding={"10px 10px"}
+                        margin={"5px 10px 5px 0px"}
+                        fWeight={"600"}
+                        btnBorder={"1px solid gray"}
+                        fSize={"14px"}
+                        bRadius={"5px"}
+                        txtColor={"#fff"}
+                        hoverBg={"#fff"}
+                        hoverTxt={"#3F5C88"}
+                        transition={"all 0.3s"}
+                        hoverBorder={"1px solid #3F5C88"}
+                        btnText={"Click to Unarchive"}
+                        onClick={() => {
+                          this.unarchiveMessage(value.id);
+                        }}
+                      ></Button>
                     </td>
                   </tr>
                 ))}
@@ -69,9 +132,16 @@ class Messages extends Component {
           ) : (
             "There are no more messages."
           )}
+          {console.log(
+            'window.location.pathname.split("/")[4]',
+            window.location.pathname.split("/")[4]
+          )}
           <Pagination
             paginationCount={this.state.messagesCount}
-            currentPage={window.location.pathname.split("/")[3]}
+            currentPage={parseInt(window.location.pathname.split("/")[4])}
+            url={`/contact/messages/archived`}
+            itemsPerPage={parseInt(this.state.itemsPerPage)}
+            activePage={parseInt(this.state.activePage)}
           />
         </MessageStyle>
         <Footer />
@@ -80,4 +150,4 @@ class Messages extends Component {
   }
 }
 
-export default Messages;
+export default ArchivedMessages;

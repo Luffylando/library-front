@@ -2,9 +2,15 @@ import React, { Fragment, useState } from "react";
 import AddBookStyle from "./style";
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
+import InputValidationField from "../../../components/InputValidationField";
+import TextareaValidationField from "../../../components/TextareaValidationField";
+import SelectValidationField from "../../../components/SelectValidationField";
 import axios from "axios";
 import { Formik } from "formik";
 import H1 from "../../../ui/H1";
+import { store } from "react-notifications-component";
+import AddBookSchema from "./validation";
+import Button from "../../../components/Button";
 
 const options = [
   { id: "Romance", name: "Romance" },
@@ -17,6 +23,9 @@ const options = [
 const AddBook = () => {
   const [imageName] = useState("");
   let [genre] = useState("");
+  let [validate, setValidate] = useState(false);
+
+  let [quote] = useState("");
   const [file, setFile] = useState("");
   const [filename, setFilename] = useState("Chose File");
   const [uploadedFile, setUploadedFile] = useState({});
@@ -32,33 +41,59 @@ const AddBook = () => {
       <AddBookStyle>
         <H1>Add New Book</H1>
         <Formik
-          initialValues={{ author: "", title: "" }}
+          initialValues={{ author: "", title: "", quote: "" }}
+          validationSchema={validate === true ? AddBookSchema : null}
           onSubmit={async (values, { setSubmitting }) => {
             const formData = new FormData();
             formData.append("file", file);
             try {
-              const res = await axios.post(
-                "http://localhost:4000/books/imgUpload",
-                formData,
-                {
-                  headers: {
-                    "Contant-Type": "multipart/form-data"
+              if (file) {
+                const res = await axios.post(
+                  "http://localhost:4000/books/imgUpload",
+                  formData,
+                  {
+                    headers: {
+                      "Contant-Type": "multipart/form-data"
+                    }
                   }
-                }
-              );
+                );
+                const { fileName, filePath, type, fullName } = res.data;
+                setUploadedFile({ fullName, filePath });
+                await axios.post("http://localhost:4000/books/add", {
+                  title: values.title,
+                  author: values.author,
+                  genre: values.genre,
+                  quote: values.quote,
+                  image: fullName
+                });
+              } else {
+                await axios.post("http://localhost:4000/books/add", {
+                  title: values.title,
+                  author: values.author,
+                  genre: values.genre,
+                  quote: values.quote,
+                  image: ""
+                });
+              }
 
-              const { fileName, filePath, type, fullName } = res.data;
-
-              setUploadedFile({ fullName, filePath });
-
-              await axios.post("http://localhost:4000/books/add", {
-                title: values.title,
-                author: values.author,
-                genre: values.genre,
-                image: fullName
+              store.addNotification({
+                container: "top-right",
+                animationIn: ["animated", "bounceIn"],
+                animationOut: ["animated", "bounceOut"],
+                dismiss: {
+                  duration: 5000,
+                  onScreen: false
+                },
+                content: (
+                  <div className="notification-custom-success">
+                    <div className="notification-custom-content">
+                      <div className="notification-message">
+                        <div className="message">Book Successfully Added!</div>
+                      </div>
+                    </div>
+                  </div>
+                )
               });
-
-              window.location.href = "/catalog";
             } catch (err) {
               console.log("err", err);
               if (err.response.status === 500) {
@@ -69,6 +104,7 @@ const AddBook = () => {
             }
 
             setTimeout(() => {
+              window.location.href = "/catalog";
               setSubmitting(false);
             }, 400);
           }}
@@ -78,63 +114,67 @@ const AddBook = () => {
             errors,
             touched,
             handleChange,
+            validateForm,
             handleBlur,
             handleSubmit,
             isSubmitting
+
             /* and other goodies */
           }) => (
             <form onSubmit={handleSubmit}>
               <div className="inputDiv">
-                <label>Author</label>
-                <input
+                <InputValidationField
+                  label="Author"
                   type="text"
                   name="author"
+                  placehodler="Author"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.author}
+                  errors={errors.author}
+                  touched={touched.author}
                 />
-                <div className="error">
-                  {errors.author && touched.author && errors.author}
-                </div>
               </div>
               <div className="inputDiv">
-                <label>Title</label>
-                <input
-                  type="text"
-                  name="title"
+                <div className="inputDiv">
+                  <InputValidationField
+                    label="Title"
+                    type="text"
+                    name="title"
+                    placehodler="Title"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.title}
+                    errors={errors.title}
+                    touched={touched.title}
+                  />
+                </div>
+              </div>
+              <div className="textareaDiv">
+                <TextareaValidationField
+                  label="Quote"
+                  name="quote"
+                  placehodler="Quote"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.title}
+                  value={values.quote}
+                  errors={errors.quote}
+                  touched={touched.quote}
                 />
-                <div className="error">
-                  {errors.title && touched.title && errors.title}
-                </div>
               </div>
               <div className="selectAndFile">
                 <div className="selectDiv">
-                  <label>Genre</label>
-                  <select
+                  <SelectValidationField
+                    label="Genre"
                     name="genre"
-                    value={values.genre}
+                    placehodler="Genre"
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    style={{ display: "block" }}
-                  >
-                    <option key={""} value={""} />
-
-                    {options.map(option => (
-                      <option
-                        key={option.id}
-                        value={option.name}
-                        label={option.name}
-                      >
-                        {option.name}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="error">
-                    {errors.genre && touched.genre && errors.genre}
-                  </div>
+                    value={values.genre}
+                    errors={errors.genre}
+                    touched={touched.genre}
+                    options={options}
+                  />
                 </div>
 
                 <div className="fileDiv">
@@ -156,9 +196,29 @@ const AddBook = () => {
                 </div>
               </div>
               <div className="submitBtn">
-                <button type="submit" disabled={isSubmitting}>
-                  Submit
-                </button>
+                <Button
+                  bgColor={"#3F5D88"}
+                  width={"100%"}
+                  padding={"5px 0px"}
+                  margin={"10px 0px"}
+                  fWeight={"600"}
+                  fSize={"16px"}
+                  bRadius={"5px"}
+                  txtColor={"#fff"}
+                  hoverBg={"#fff"}
+                  hoverTxt={"#3F5D88"}
+                  transition={"all 0.3s"}
+                  hoverBorder={"1px solid #3F5D88"}
+                  btnText={"Add Book"}
+                  type={"submit"}
+                  disabled={isSubmitting}
+                  onClick={() => {
+                    validateForm().then(() => setValidate(true));
+                    setTimeout(() => {
+                      setValidate(false);
+                    }, 500);
+                  }}
+                ></Button>
               </div>
             </form>
           )}

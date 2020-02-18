@@ -4,6 +4,9 @@ import { x, pencil, thumbDown, thumbUp } from "../../assets/icons";
 import SVGInline from "react-svg-inline";
 import { hydrate } from "react-dom";
 import { Formik } from "formik";
+import { store } from "react-notifications-component";
+import Button from "../../components/Button";
+
 export default class Comment extends Component {
   constructor() {
     super();
@@ -56,7 +59,6 @@ export default class Comment extends Component {
                   handleBlur,
                   handleSubmit,
                   isSubmitting
-                  /* and other goodies */
                 }) => (
                   <form onSubmit={this.props.handleSubmit}>
                     <textarea
@@ -67,11 +69,40 @@ export default class Comment extends Component {
                       onChange={this.props.handleEditChange}
                       onBlur={handleBlur}
                     ></textarea>
-                    <div className="btnSection">
-                      <button onClick={this.props.cancelFunc}>Cancel</button>
-                      <button type="submit" disabled={isSubmitting}>
-                        Submit
-                      </button>
+                    <div className="btns">
+                      <Button
+                        bgColor={"#3F5D88"}
+                        width={"80px"}
+                        padding={"5px 0px"}
+                        margin={"10px 5px"}
+                        fWeight={"300"}
+                        fSize={"12px"}
+                        bRadius={"10px"}
+                        txtColor={"#fff"}
+                        hoverBg={"#fff"}
+                        hoverTxt={"#3F5D88"}
+                        transition={"all 0.3s"}
+                        hoverBorder={"1px solid #3F5D88"}
+                        btnText={"Cancel"}
+                        onClick={this.props.cancelFunc}
+                      ></Button>
+                      <Button
+                        bgColor={"#3F5D88"}
+                        width={"80px"}
+                        padding={"5px 0px"}
+                        margin={"10px 5px"}
+                        fWeight={"300"}
+                        fSize={"12px"}
+                        bRadius={"10px"}
+                        txtColor={"#fff"}
+                        hoverBg={"#fff"}
+                        hoverTxt={"#3F5D88"}
+                        transition={"all 0.3s"}
+                        hoverBorder={"1px solid #3F5D88"}
+                        btnText={"Edit"}
+                        type="submit"
+                        disabled={isSubmitting}
+                      ></Button>
                     </div>
                   </form>
                 )}
@@ -80,7 +111,6 @@ export default class Comment extends Component {
           ) : (
             <div className="comment">{this.props.comment}</div>
           )}
-
           {/* <div className="commentLikes">
             <div className="up">
               <SVGInline svg={thumbUp} />

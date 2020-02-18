@@ -2,151 +2,25 @@ import styled from "styled-components";
 
 const SingleBookStyle = styled.div`
   min-height: calc(100vh - 215px);
-  padding: 100px 460px;
+  padding: 0px 500px;
   display: flex;
   position: relative;
+  flex-direction: column;
 
-  .deleteBtn {
+  .topBtns {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 10px;
-    right: 380px;
-    border: 1px solid #000;
-    cursor: pointer;
-    background: #fff;
-    padding: 7px 20px;
-    border-radius: 50px;
-    color: #000;
-    transition: 0.4s all;
+    justify-content: space-between;
+    margin: 40px 0px;
 
-    :hover {
-      background: #3f5d88;
-      color: #fff;
-
-      span {
-        svg {
-          path {
-            fill: #fff;
-          }
-        }
-      }
-    }
-
-    p {
-      margin: 0px;
-    }
-
-    span {
-      width: 18px;
-      height: 18px;
-
-      svg {
-        width: 18px;
-        height: 18px;
-        margin-left: 5px;
-        path {
-          transition: fill 0.4s ease;
-          fill: #000;
-        }
-      }
+    .bookBtns {
+      display: flex;
     }
   }
 
-  .editBtn {
+  .book {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 10px;
-    right: 540px;
-    border: 1px solid #000;
-    background: #fff;
-    padding: 7px 20px;
-    border-radius: 50px;
-    color: #000;
-    transition: 0.4s all;
-
-    :hover {
-      background: #3f5d88;
-      color: #fff;
-
-      span {
-        svg {
-          path {
-            fill: #fff;
-          }
-        }
-      }
-    }
-
-    p {
-      margin: 0px;
-    }
-
-    span {
-      width: 18px;
-      height: 18px;
-
-      svg {
-        width: 18px;
-        height: 18px;
-        margin-left: 5px;
-        path {
-          transition: fill 0.4s ease;
-          fill: #000;
-        }
-      }
-    }
+    flex-direction: row;
   }
-  .backBtn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 10px;
-    left: 340px;
-    border: 1px solid #000;
-    background: #fff;
-    padding: 7px 20px;
-    border-radius: 50px;
-    color: #000;
-    transition: 0.4s all;
-
-    :hover {
-      background: #3f5d88;
-      color: #fff;
-
-      span {
-        svg {
-          path {
-            fill: #fff;
-          }
-        }
-      }
-    }
-
-    p {
-      margin: 0px;
-    }
-
-    span {
-      width: 18px;
-      height: 18px;
-
-      svg {
-        width: 18px;
-        height: 18px;
-        margin-left: 5px;
-        path {
-          transition: fill 0.4s ease;
-          fill: #000;
-        }
-      }
-    }
-  }
-
   img {
     width: 320px;
     height: 520px;
@@ -335,16 +209,12 @@ const CommentStyle = styled.div`
   .btnSection {
     width: 70%;
     text-align: right;
+    display: flex;
+    justify-content: flex-end;
+  }
 
-    button {
-      border: none;
-      background: none;
-      border: 1px solid #000;
-      border-radius: 5px;
-      padding: 5px 10px;
-      margin: 0px 2.5px;
-      cursor: pointer;
-    }
+  .commentBtnSection {
+    display: flex;
   }
 `;
 

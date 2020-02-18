@@ -13,7 +13,7 @@ const PaginationStyle = styled.div`
     }
 
     .active {
-      border: 2px solid red;
+      border: 2px solid #3f5d88;
     }
   }
 `;

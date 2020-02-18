@@ -33,6 +33,25 @@ const AddBookStyle = styled.div`
       }
     }
 
+    .textareaDiv {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 25px;
+
+      label {
+        font-size: 16px;
+        margin-bottom: 5px;
+      }
+      textarea {
+        height: 120px;
+        border: none;
+        border-bottom: 1px solid #d4d4d4;
+        font-size: 20px;
+        outline: none;
+        padding-left: 10px;
+      }
+    }
+
     .selectAndFile {
       display: flex;
       align-items: center;

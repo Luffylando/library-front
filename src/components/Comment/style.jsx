@@ -38,7 +38,8 @@ const CommentStyle = styled.div`
         margin-right: 5px;
         p {
           margin: 0px;
-          margin-right: 10px;        }
+          margin-right: 10px;
+        }
       }
 
       .down {
@@ -51,8 +52,7 @@ const CommentStyle = styled.div`
         padding: 1px 5px;
         p {
           margin: 0px;
-          margin-right: 10px;        }
-
+          margin-right: 10px;
         }
       }
     }
@@ -87,6 +87,11 @@ const CommentStyle = styled.div`
         }
       }
     }
+  }
+
+  .btns {
+    display: flex;
+    justify-content: flex-end;
   }
 `;
 

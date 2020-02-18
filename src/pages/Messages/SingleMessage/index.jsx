@@ -4,12 +4,18 @@ import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
 import axios from "axios";
 import { Formik } from "formik";
+import { store } from "react-notifications-component";
+import InputValidationField from "../../../components/InputValidationField";
+import TextareaValidationField from "../../../components/TextareaValidationField";
+import MessageValidation from "./validation";
+import Button from "../../../components/Button";
 
 class SingleMessage extends Component {
   constructor() {
     super();
     this.state = {
-      message: {}
+      message: {},
+      validate: false
     };
   }
 
@@ -35,16 +41,44 @@ class SingleMessage extends Component {
           <>
             <Formik
               initialValues={{ answerText: "", answerSubject: "" }}
+              validationSchema={
+                this.state.validate === true ? MessageValidation : null
+              }
               onSubmit={async (values, { setSubmitting }) => {
-                console.log("val", values);
-
                 await axios.post(`http://localhost:4000/contact/email`, {
                   // mailerTo: this.state.message.email,
                   mailerTo: "ogistdipen@outlook.com",
                   mailerSubject: values.answerSubject,
                   mailerText: values.answerText
                 });
+                // Success Message
 
+                store.addNotification({
+                  title: "Message successfully sent!",
+                  message: `message"`,
+                  type: "danger",
+                  insert: "top",
+                  container: "top-right",
+                  animationIn: ["animated", "bounceIn"],
+                  animationOut: ["animated", "bounceOut"],
+                  dismiss: {
+                    duration: 5000,
+                    onScreen: false
+                  },
+                  content: (
+                    <div className="notification-custom-success">
+                      <div className="notification-custom-content">
+                        <div className="notification-message">
+                          <div className="message-header">
+                            Message Successfully Sent.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                });
+
+                // End of Success Message
                 let updateData = { answered: true };
                 await axios.put(
                   `http://localhost:4000/contact/message/update/${
@@ -53,11 +87,10 @@ class SingleMessage extends Component {
                   updateData
                 );
 
-                window.location.href = "/contact/messages/1/10";
-
                 setTimeout(() => {
+                  window.location.href = "/contact/messages/1/5";
                   setSubmitting(false);
-                }, 400);
+                }, 1000);
               }}
             >
               {({
@@ -66,46 +99,64 @@ class SingleMessage extends Component {
                 touched,
                 handleChange,
                 handleBlur,
+                validateForm,
                 handleSubmit,
                 isSubmitting
                 /* and other goodies */
               }) => (
                 <form onSubmit={handleSubmit}>
                   <div className="inputDiv">
-                    <label>Subject</label>
-                    <textarea
+                    <InputValidationField
+                      label="Subject"
                       type="text"
                       name="answerSubject"
+                      placehodler="Subject"
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.answerSubject}
+                      errors={errors.answerSubject}
+                      touched={touched.answerSubject}
                     />
-                    <div className="error">
-                      {errors.answerSubject &&
-                        touched.answerSubject &&
-                        errors.answerSubject}
-                    </div>
                   </div>
                   <div className="inputDiv">
-                    <label>Answer Text</label>
-                    <textarea
-                      type="text"
+                    <TextareaValidationField
+                      label="Answer Text"
                       name="answerText"
+                      placehodler="Answer Text"
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.answerText}
+                      errors={errors.answerText}
+                      touched={touched.answerText}
                     />
-                    <div className="error">
-                      {errors.answerText &&
-                        touched.answerText &&
-                        errors.answerText}
-                    </div>
                   </div>
 
                   <div className="submitBtn">
-                    <button type="submit" disabled={isSubmitting}>
-                      Submit
-                    </button>
+                    <Button
+                      bgColor={"#F15925"}
+                      width={"100px"}
+                      padding={"10px 0px"}
+                      margin={"5px 0px 5px 0px"}
+                      fWeight={"600"}
+                      fSize={"14px"}
+                      bRadius={"5px"}
+                      txtColor={"#fff"}
+                      hoverBg={"#fff"}
+                      hoverTxt={"#F15925"}
+                      transition={"all 0.3s"}
+                      hoverBorder={"1px solid #F15925"}
+                      btnText={"Submit"}
+                      type="submit"
+                      onClick={() => {
+                        validateForm().then(() =>
+                          this.setState({ validate: true })
+                        );
+                        setTimeout(() => {
+                          this.setState({ validate: false });
+                        }, 500);
+                      }}
+                      disabled={isSubmitting}
+                    ></Button>
                   </div>
                 </form>
               )}
