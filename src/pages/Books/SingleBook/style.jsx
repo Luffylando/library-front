@@ -4,26 +4,69 @@ const SingleBookStyle = styled.div`
   min-height: calc(100vh - 215px);
   padding: 0px 500px;
   display: flex;
-  position: relative;
   flex-direction: column;
+  background: #f9f8f8;
 
   .topBtns {
     display: flex;
     justify-content: space-between;
     margin: 40px 0px;
+    position: relative;
 
+    svg {
+      display: flex;
+      justify-content: flex-end;
+      cursor: pointer;
+      height: 30px;
+      width: 30px;
+      margin: 0px;
+      top: 100px;
+      position: absolute;
+    }
     .bookBtns {
       display: flex;
+    }
+
+    .toggleOptionMenu {
+      position: absolute;
+      border: 1px solid #000;
+      top: 100px;
+      background: #fff;
+      right: 0px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 5px 10px;
+      border-radius: 5px;
+
+      a {
+        p {
+          margin: 0px;
+          border-bottom: 1px solid #c4c4c4;
+          color: #000;
+        }
+      }
+
+      p {
+        padding: 5px 20px;
+        text-align: center;
+        cursor: pointer;
+
+        &:hover {
+          font-weight: bold;
+        }
+      }
     }
   }
 
   .book {
     display: flex;
     flex-direction: row;
+    user-select: none;
   }
   img {
-    width: 320px;
-    height: 520px;
+    width: 400px;
+    height: 500px;
     border-radius: 10px;
     -webkit-box-shadow: 13px 10px 5px 0px rgba(184, 182, 184, 1);
     -moz-box-shadow: 13px 10px 5px 0px rgba(184, 182, 184, 1);
@@ -31,7 +74,7 @@ const SingleBookStyle = styled.div`
   }
 
   .bookDesc {
-    height: 520px;
+    height: 450px;
     padding: 50px 100px 20px 70px;
     width: 550px;
     display: flex;
@@ -128,7 +171,6 @@ const SingleBookStyle = styled.div`
 
     .btns {
       width: 100%;
-      text-align: right;
       button {
         margin: 10px 2.5px;
         width: 120px;
@@ -164,6 +206,7 @@ const SingleBookStyle = styled.div`
 
 const CommentStyle = styled.div`
   padding: 50px 460px 100px 460px;
+  background: #f9f8f8;
 
   .commentSection {
     .otherComments {
@@ -192,6 +235,7 @@ const CommentStyle = styled.div`
       outline: none;
       font-size: 16px;
       height: 30px;
+      background: #f9f8f8;
     }
 
     .image {

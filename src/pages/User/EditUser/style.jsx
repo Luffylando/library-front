@@ -1,61 +1,121 @@
 import styled from "styled-components";
+import leftCoverImage from "../../../assets/imgs/addBookCover.jpeg";
 
 const EditUserStyle = styled.div`
   min-height: calc(100vh - 215px);
-  padding: 75px 400px;
+  display: flex;
+  background: #f9f8f8;
 
-  h1 {
-    text-align: center;
-    margin-bottom: 30px;
+  .leftCoverImage {
+    background-image: url(${leftCoverImage});
+    height: calc(100vh - 215px);
+    width: 30%;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: right top;
   }
 
   form {
+    width: 70%;
+    padding: 0px 400px;
     display: flex;
+    justify-content: center;
     flex-direction: column;
-    align-items: center;
-    padding: 100px 0px 30px 0px;
 
-    .labelInput {
-      width: 350px;
+    h2 {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .row {
+      width: 100%;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin: 5px 0px;
-      height: 35px;
-    }
+      flex-direction: row;
 
-    label {
-      margin-right: 20px;
-    }
-
-    input {
-      width: 200px;
-      border: none;
-      border-bottom: 1px solid #000;
-      padding: 2.5px 0px;
-      outline: none;
-    }
-
-    .submitBtn {
-      text-align: right;
-      width: 100%;
-      width: 350px;
-      margin-top: 30px;
-
-      button {
-        border: none;
-        border: 1px solid #000;
-        border-radius: 50px;
-        padding: 10px 40px;
-        width: 100%;
-        cursor: pointer;
+      .inputField {
+        width: 46%;
+        input {
+          background: #f9f8f8;
+        }
       }
     }
-  }
 
-  .chosenImg {
-    width: 300px;
-    height: 300px;
+    .rowSelect {
+      display: flex;
+      justify-content: space-between;
+      .selectDiv {
+        width: 48%;
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        input {
+          width: 95%;
+          border: none;
+          border: 1px solid #c4c4c4;
+          border-radius: 5px;
+          outline: none;
+          color: #444444;
+          padding: 10px;
+          background: #f9f8f8 !important;
+        }
+
+        .selectField__control {
+          border: 1px solid #c4c4c4;
+        }
+
+        .errorMsg {
+          top: 5px;
+          right: 0px;
+          z-index: 999999;
+          position: absolute;
+          color: #a93847;
+        }
+        label {
+          margin: 10px 0px;
+        }
+      }
+
+      .editImage {
+        padding-right: 10px;
+        width: 40%;
+        img {
+          width: 100%;
+          max-height: 150px;
+        }
+      }
+    }
+
+    .textareaDiv {
+      width: 100%;
+    }
+
+    .fileDiv {
+      height: 35px;
+      width: fit-content;
+      margin: 20px 0px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      label {
+        margin-left: 20px;
+        padding: 10px 15px;
+        border: 1px solid #c4c4c4;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      p {
+        margin: 0px;
+        font-size: 16px;
+        margin-bottom: 5px;
+      }
+      input[type="file"] {
+        display: none;
+      }
+    }
   }
 `;
 

@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 const MainStyle = styled.div`
   position: relative;
-  margin-top: -1px;
   .backgroundImg {
     height: 580px;
     background: #78cbc2;
@@ -29,14 +28,17 @@ const MainStyle = styled.div`
     height: 490px;
     top: 140px;
     padding: 35px;
-    background: #fff;
+    background: #f9f8f8;
     -webkit-box-shadow: -1px 0px 24px 3px rgba(0, 0, 0, 0.2);
     -moz-box-shadow: -1px 0px 24px 3px rgba(0, 0, 0, 0.2);
     box-shadow: -1px 0px 24px 3px rgba(0, 0, 0, 0.2);
 
     .descriptionSection {
-      flex-basis: 30%;
+      flex-basis: 40%;
       padding: 20px 50px 20px 60px;
+      display: flex;
+      flex-direction: column;
+      /* justify-content: space-between; */
 
       .descTitle {
         padding: 15px 0px;
@@ -78,15 +80,21 @@ const MainStyle = styled.div`
           }
         }
       }
+      button {
+        margin: 80px 0px 0px 0px;
+      }
     }
 
-    img {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 410px;
-      width: 65%;
-      padding-left: 40px;
+    .imageContainer {
+      flex-basis: 60%;
+      img {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 410px;
+        width: 100%;
+        padding-left: 40px;
+      }
     }
   }
 `;

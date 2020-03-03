@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import ButtonStyle from "./style";
-import SVGInline from "react-svg-inline";
 
 class Button extends Component {
   constructor(props) {
@@ -30,6 +29,10 @@ class Button extends Component {
         type={this.props.type}
         disabled={this.props.disabled}
         svg={this.props.svg}
+        btlr={this.props.btlr}
+        btrr={this.props.btrr}
+        bblr={this.props.bblr}
+        bbrr={this.props.bbrr}
       >
         {this.props.btnText}{" "}
         {/* {this.props.svg ? <SVGInline svg={this.props.svg} /> : null} */}

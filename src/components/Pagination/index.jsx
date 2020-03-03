@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PaginationStyle from "./style";
-import { Link } from "react-router-dom";
 
 class Pagination extends Component {
   constructor(props) {
@@ -31,7 +30,7 @@ class Pagination extends Component {
       l;
 
     for (let i = 1; i <= last; i++) {
-      if (i == 1 || i == last || (i >= left && i < right)) {
+      if (i === 1 || i === last || (i >= left && i < right)) {
         range.push(i);
       }
     }
@@ -64,9 +63,6 @@ class Pagination extends Component {
   }
   render() {
     let allMessages = this.props.paginationCount.length;
-
-    console.log("this.props.activePage", this.props.activePage);
-
     return (
       <PaginationStyle>
         <ul>

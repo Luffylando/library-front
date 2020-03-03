@@ -4,42 +4,79 @@ import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
 import InputValidationField from "../../../components/InputValidationField";
 import TextareaValidationField from "../../../components/TextareaValidationField";
-import SelectValidationField from "../../../components/SelectValidationField";
 import axios from "axios";
 import { Formik } from "formik";
-import H1 from "../../../ui/H1";
+import H2 from "../../../ui/H2";
+
 import { store } from "react-notifications-component";
 import AddEventSchema from "./validation";
 import Button from "../../../components/Button";
-import Datetime from "react-datetime";
 import DatePicker from "react-datepicker";
 import * as moment from "moment";
+import Select from "react-select";
+
+// Select style and Data
+
+const options = [
+  { value: true, label: "Highlight" },
+  { value: false, label: "Normal" }
+];
+
+const customStyles = {
+  option: (styles, state) => ({
+    ...styles,
+    color: state.isSelected ? "#FFF" : styles.color,
+    backgroundColor: state.isSelected ? "#3F5D88" : styles.color,
+    borderBottom: "1px solid rgba(0, 0, 0, 0.125)",
+    border: "none",
+
+    "&:hover": {
+      color: "#FFF",
+      backgroundColor: "#3F5D88",
+      border: "none"
+    },
+    height: "fit-content"
+  }),
+  control: (styles, state) => ({
+    ...styles,
+    boxShadow: "none",
+    borderColor: "none",
+    border: "none",
+    "&:hover": {
+      borderColor: state.isFocused ? "#D0EAE2" : "#CED4DA"
+    }
+  })
+};
+
+// End of Select style and Data
 
 const AddEvent = () => {
-  const [imageName] = useState("");
-  let [genre] = useState("");
   let [validate, setValidate] = useState(false);
+  let [selectedOption, setSelectedOption] = useState("");
 
   const [startDate, setStartDate] = useState(new Date());
   let handleColor = time => {
     return time.getHours() > 12 ? "text-success" : "text-error";
   };
 
-  let [quote] = useState("");
   const [file, setFile] = useState("");
   const [filename, setFilename] = useState("Chose File");
-  const [uploadedFile, setUploadedFile] = useState({});
+  const [uploadFile, setUploadedFile] = useState({});
 
   const onChange = e => {
     setFile(e.target.files[0]);
     setFilename(e.target.files[0].name);
   };
 
+  const handleSelectChange = chosenOption => {
+    setSelectedOption(chosenOption);
+  };
+
   return (
     <Fragment>
       <Header />
       <AddEventStyle>
-        <H1>Add New Event</H1>
+        <div className="leftCoverImage"></div>
         <Formik
           initialValues={{
             eventName: "",
@@ -63,23 +100,25 @@ const AddEvent = () => {
                     }
                   }
                 );
-                const { fileName, filePath, type, fullName } = res.data;
-                console.log("fullName", fullName);
+                const { filePath, fullName } = res.data;
                 setUploadedFile({ fullName, filePath });
                 await axios.post("http://localhost:4000/events/add", {
                   eventName: values.eventName,
                   eventDescription: values.eventDescription,
                   eventCreator: values.eventCreator,
                   eventDate: moment(startDate).format("YYYY-MM-DD HH:mm:ss"),
-                  eventImage: fullName
+                  eventImage: fullName,
+                  highlighted: selectedOption.value
                 });
               } else {
+                console.log("highlighted", selectedOption);
                 await axios.post("http://localhost:4000/events/add", {
                   eventName: values.eventName,
                   eventDescription: values.eventDescription,
                   eventCreator: values.eventCreator,
                   eventDate: moment(startDate).format("YYYY-MM-DD HH:mm:ss"),
-                  eventImage: ""
+                  eventImage: "",
+                  highlighted: selectedOption.value
                 });
               }
 
@@ -104,14 +143,14 @@ const AddEvent = () => {
             } catch (err) {
               console.log("err", err);
               if (err.response.status === 500) {
-                console.log("THERE was a problem with the server.");
+                console.log("There was a problem with the server.");
               } else {
                 console.log(err.response.data.msg);
               }
             }
 
             setTimeout(() => {
-              // window.location.href = "/events";
+              window.location.href = "/events";
               setSubmitting(false);
             }, 400);
           }}
@@ -125,36 +164,38 @@ const AddEvent = () => {
             handleBlur,
             handleSubmit,
             isSubmitting
-
-            /* and other goodies */
           }) => (
             <form onSubmit={handleSubmit}>
-              <div className="inputDiv">
-                <InputValidationField
-                  label="Event Name"
-                  type="text"
-                  name="eventName"
-                  placehodler="Event Name"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.eventName}
-                  errors={errors.eventName}
-                  touched={touched.eventName}
-                />
-              </div>
-              <div className="inputDiv">
-                <div className="inputDiv">
+              <H2>Add Event</H2>
+              <div className="row">
+                <div className="inputField">
+                  <InputValidationField
+                    label="Event Name"
+                    type="text"
+                    name="eventName"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.eventName}
+                    errors={errors.eventName}
+                    touched={touched.eventName}
+                  />
+                </div>
+                <div className="inputField">
                   <InputValidationField
                     label="Event Creator"
                     type="text"
                     name="eventCreator"
-                    placehodler="Event Creator"
                     onChange={handleChange}
                     onBlur={handleBlur}
                     value={values.eventCreator}
                     errors={errors.eventCreator}
                     touched={touched.eventCreator}
                   />
+                </div>
+              </div>
+              <div className="rowSelect">
+                <div className="selectDiv">
+                  <label>Event Date</label>
                   <DatePicker
                     showTimeSelect
                     selected={startDate}
@@ -165,20 +206,29 @@ const AddEvent = () => {
                     value={moment(startDate).format("DD-MM-YYYY HH:mm")}
                   />
                 </div>
+                <div className="selectDiv">
+                  <label>Set Highlight</label>
+                  <Select
+                    styles={customStyles}
+                    value={selectedOption}
+                    onChange={handleSelectChange}
+                    options={options}
+                    className="selectInput"
+                    classNamePrefix="selectField"
+                    defaultValue={false}
+                  />
+                </div>
               </div>
-              <div className="textareaDiv">
-                <TextareaValidationField
-                  label="Event Description (Optional)"
-                  name="eventDescription"
-                  placehodler="Event Description"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.eventDescription}
-                  errors={errors.eventDescription}
-                  touched={touched.eventDescription}
-                />
-              </div>
-              <div className="selectAndFile">
+              <TextareaValidationField
+                label="Event Description (Optional)"
+                name="eventDescription"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.eventDescription}
+                errors={errors.eventDescription}
+                touched={touched.eventDescription}
+              />
+              <div className="inputField">
                 <div className="fileDiv">
                   <p>Pick Event Image:</p>
                   <label htmlFor="customFile">{filename}</label>
@@ -201,11 +251,12 @@ const AddEvent = () => {
                 <Button
                   bgColor={"#3F5D88"}
                   width={"100%"}
-                  padding={"5px 0px"}
-                  margin={"10px 0px"}
+                  padding={"15px 0px"}
+                  margin={"15px 0px"}
                   fWeight={"600"}
                   fSize={"16px"}
-                  bRadius={"5px"}
+                  bRadius={"50px"}
+                  letterSpacing={"1px"}
                   txtColor={"#fff"}
                   hoverBg={"#fff"}
                   hoverTxt={"#3F5D88"}

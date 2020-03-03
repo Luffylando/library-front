@@ -13,6 +13,13 @@ import "animate.css";
 import "react-confirm-alert/src/react-confirm-alert.css"; // Import css
 import "react-datepicker/dist/react-datepicker.css";
 
+// scroll on top of page when we go to other page from the one we are on.
+history.listen(location => {
+  setTimeout(() => {
+    window.scrollTo(0, 0);
+  });
+});
+
 ReactDOM.render(
   <Provider store={store}>
     <Router history={history}>

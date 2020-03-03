@@ -4,7 +4,9 @@ const ButtonStyle = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: "Poppins", sans-serif;
   cursor: pointer;
+
   background: ${props => (props.bgColor ? props.bgColor : "#fff")};
   color: ${props => (props.txtColor ? props.txtColor : "#000")};
   height: ${props => (props.height ? props.height : "auto")};
@@ -12,6 +14,10 @@ const ButtonStyle = styled.button`
   border: none;
   border: ${props =>
     props.btnBorder ? props.btnBorder : "1px solid transparent"};
+  border-top-left-radius: ${props => (props.btlr ? props.btlr : "0px")};
+  border-top-right-radius: ${props => (props.btrr ? props.btrr : "0px")};
+  border-bottom-left-radius: ${props => (props.bblr ? props.bblr : "0px")};
+  border-bottom-right-radius: ${props => (props.bbrr ? props.bbrr : "0px")};
   padding: ${props => (props.padding ? props.padding : "10px 15px")};
   margin: ${props => (props.margin ? props.margin : "10px 15px")};
 

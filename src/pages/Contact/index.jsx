@@ -5,7 +5,8 @@ import Footer from "../../components/Footer";
 import InputValidationField from "../../components/InputValidationField";
 import TextareaValidationField from "../../components/TextareaValidationField";
 import Button from "../../components/Button";
-
+import SVGInline from "react-svg-inline";
+import { box, plane } from "../../assets/icons";
 import { Formik } from "formik";
 import axios from "axios";
 import { store } from "react-notifications-component";
@@ -98,12 +99,11 @@ export default class Contact extends Component {
                 <form onSubmit={handleSubmit}>
                   <h1> Contact us </h1>
                   <div className="row">
-                    <div className="inputDiv">
+                    <div className="inputField">
                       <InputValidationField
                         label="First Name"
                         type="text"
                         name="firstName"
-                        placehodler="First Name"
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values.firstName}
@@ -111,12 +111,11 @@ export default class Contact extends Component {
                         touched={touched.firstName}
                       />
                     </div>
-                    <div className="inputDiv">
+                    <div className="inputField">
                       <InputValidationField
                         label="Last Name"
                         type="text"
                         name="lastName"
-                        placehodler="Last Name"
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values.lastName}
@@ -125,32 +124,25 @@ export default class Contact extends Component {
                       />
                     </div>
                   </div>
-
-                  <div className="inputDiv">
-                    <InputValidationField
-                      label="Email"
-                      type="text"
-                      name="email"
-                      placehodler="Email"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.email}
-                      errors={errors.email}
-                      touched={touched.email}
-                    />
-                  </div>
-                  <div className="inputDiv">
-                    <TextareaValidationField
-                      label="Message"
-                      name="message"
-                      placehodler="Message"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.message}
-                      errors={errors.message}
-                      touched={touched.message}
-                    />
-                  </div>
+                  <InputValidationField
+                    label="Email"
+                    type="text"
+                    name="email"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.email}
+                    errors={errors.email}
+                    touched={touched.email}
+                  />
+                  <TextareaValidationField
+                    label="Message"
+                    name="message"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.message}
+                    errors={errors.message}
+                    touched={touched.message}
+                  />
                   <div className="submitBtn">
                     <Button
                       type={"submit"}
@@ -168,7 +160,7 @@ export default class Contact extends Component {
                       txtColor={"#fff"}
                       fWeight={"500"}
                       width={"300px"}
-                      margin={"50px 10px 30px 10px"}
+                      margin={"50px 10px 15px 10px"}
                       letterSpacing={"1px"}
                       padding={"20px 20px"}
                       bRadius={"50px"}
@@ -180,19 +172,23 @@ export default class Contact extends Component {
                     />
                   </div>
                 </form>
-                <div className="contactInfo">
-                  <h1>Connect with us:</h1>
-                  <p>For support or any questions:</p>
-                  <p>Email us at support@example.com</p>
-
-                  <p className="headline">Luffy's Library</p>
-                  <p>Address Name ...</p>
-                  <p>Address Name ...</p>
-                  <p>Address Name ...</p>
-                </div>
               </>
             )}
           </Formik>
+          <div className="contactInfo">
+            <div className="info">
+              <h1>Connect with us</h1>
+              <p>For support or any questions:</p>
+              <p>Email us at support@example.com</p>
+            </div>
+
+            <div className="reflectorImage">
+              <SVGInline className="sentMessage" svg={plane} />
+
+              <SVGInline className="box" svg={box} />
+            </div>
+            <div className="bookAnimation"></div>
+          </div>
         </ContactStyle>
         <Footer />
       </>

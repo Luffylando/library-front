@@ -1,34 +1,50 @@
 import styled from "styled-components";
+import leftCoverImage from "../../../assets/imgs/addBookCover.jpeg";
 
 const SingleMessageStyle = styled.div`
   min-height: calc(100vh - 215px);
-  padding: 100px 400px;
-  .inputDiv {
+  display: flex;
+  background: #f9f8f8;
+
+  .leftCoverImage {
+    background-image: url(${leftCoverImage});
+    height: calc(100vh - 215px);
+    width: 30%;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: right top;
+  }
+
+  form {
+    width: 70%;
+    padding: 0px 400px;
     display: flex;
+    justify-content: center;
     flex-direction: column;
-    width: 100%;
 
-    label {
-      margin: 5px;
+    h2 {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 60px;
     }
 
-    input {
-      border: none;
-      border: 1px solid #c4c4c4;
-      border-radius: 5px;
-      height: 50px;
-      margin: 5px;
-      padding-left: 5px;
+    .selectDiv {
+      width: 48%;
     }
 
-    textarea {
-      border: none;
-      border: 1px solid #c4c4c4;
-      border-radius: 5px;
-      height: 150px;
-      margin: 5px;
-      padding-left: 10px;
-      padding-top: 10px;
+    .inputField {
+      width: 100%;
+      input {
+        background: #f9f8f8;
+      }
+    }
+
+    .textareaDiv {
+      width: 100%;
+
+      textarea {
+        background: #f9f8f8;
+      }
     }
   }
 `;

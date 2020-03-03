@@ -47,7 +47,7 @@ const GlobalStyle = createGlobalStyle`
               font-weight: 600;
               color: #fff;
               font-size: 14px;
-              border-bottom: 1px solid #fff;
+              /* border-bottom: 1px solid #fff; */
               margin: 0px 25px;
               padding: 10px 0px;
           }

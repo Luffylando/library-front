@@ -1,10 +1,14 @@
 import React, { Component } from "react";
 import FeaturedStyle from "./style";
-import kant from "../../../assets/imgs/books/Kant-Critique.jpg";
-import orwell from "../../../assets/imgs/books/Orwell-1984.jpg";
-import tolstoy from "../../../assets/imgs/books/Tolstoy-War.jpg";
-import plato from "../../../assets/imgs/books/Plato-Republic.jpg";
+import kant from "../../../assets/imgs/books/b1.jpg";
+import orwell from "../../../assets/imgs/books/b2.jpg";
+import tolstoy from "../../../assets/imgs/books/b3.jpg";
+import plato from "../../../assets/imgs/books/b4.jpg";
+import defaultBook from "../../../assets/imgs/books/defaultBook.png";
+import MainPageFeaturedBook from "../../../components/MainPageFeaturedBook";
 import axios from "axios";
+import { connect } from "react-redux";
+import { ActiveMenuItem } from "../../../actions/ActiveMenuItem";
 
 class Featured extends Component {
   constructor() {
@@ -19,8 +23,84 @@ class Featured extends Component {
     this.setState({ featured: featured.data });
   };
 
+  changeActiveMenu = name => {
+    this.props.ActiveMenuItem(name);
+  };
+
+  renderDefaultBooks(booksCount) {
+    if (booksCount === 1) {
+      return (
+        <>
+          <MainPageFeaturedBook
+            bookImage={kant}
+            bookTitle={"the critique of pure reason"}
+            bookAuthor={"Immanuel Kant"}
+            linkTo={`/catalog`}
+            onClick={() => {
+              this.changeActiveMenu("Catalog");
+            }}
+          />
+          <MainPageFeaturedBook
+            bookImage={plato}
+            bookTitle={"The Republic"}
+            bookAuthor={"Plato"}
+            linkTo={`/catalog`}
+            onClick={() => {
+              this.changeActiveMenu("Catalog");
+            }}
+          />
+          <MainPageFeaturedBook
+            bookImage={tolstoy}
+            bookTitle={"War and Peace"}
+            bookAuthor={"Leo Tolstoy"}
+            linkTo={`/catalog`}
+            onClick={() => {
+              this.changeActiveMenu("Catalog");
+            }}
+          />
+        </>
+      );
+    } else if (booksCount === 2) {
+      return (
+        <>
+          <MainPageFeaturedBook
+            bookImage={kant}
+            bookTitle={"the critique of pure reason"}
+            bookAuthor={"Immanuel Kant"}
+            linkTo={`/catalog`}
+            onClick={() => {
+              this.changeActiveMenu("Catalog");
+            }}
+          />
+          <MainPageFeaturedBook
+            bookImage={plato}
+            bookTitle={"The Republic"}
+            bookAuthor={"Plato"}
+            linkTo={`/catalog`}
+            onClick={() => {
+              this.changeActiveMenu("Catalog");
+            }}
+          />
+        </>
+      );
+    } else if (booksCount === 3) {
+      return (
+        <>
+          <MainPageFeaturedBook
+            bookImage={kant}
+            bookTitle={"the critique of pure reason"}
+            bookAuthor={"Immanuel Kant"}
+            linkTo={`/catalog`}
+            onClick={() => {
+              this.changeActiveMenu("Catalog");
+            }}
+          />
+        </>
+      );
+    }
+  }
+
   render() {
-    console.log("this.state", this.state);
     return (
       <FeaturedStyle>
         <div className="titleSection">
@@ -29,47 +109,72 @@ class Featured extends Component {
         </div>
         <div className="booksSection">
           <div className="subnav">
-            <ul>
+            {/* <ul>
               <li>adult</li>
               <li>children</li>
               <li>teen</li>
               <li>movies</li>
-            </ul>
+            </ul> */}
           </div>
 
           <div className="books">
             {this.state.featured ? (
               this.state.featured.map(value => (
-                <div key={value.id} className="book">
-                  <img src={kant} alt="img" />
-                  <p className="bookTitle">{value.title}</p>
-                  <p className="bookAuthor">by {value.author}</p>
-                </div>
+                <MainPageFeaturedBook
+                  key={value.id}
+                  bookImage={
+                    value.image ? `../books/${value.image}` : defaultBook
+                  }
+                  bookTitle={value.title}
+                  bookAuthor={value.author}
+                  linkTo={`/books/${value.id}`}
+                  onClick={() => {
+                    this.changeActiveMenu("Catalog");
+                  }}
+                />
               ))
             ) : (
               <>
-                <div className="book">
-                  <img src={kant} alt="img" />
-                  <p className="bookTitle">the critique of pure reason</p>
-                  <p className="bookAuthor">by Imanuell Kant</p>
-                </div>
-                <div className="book">
-                  <img src={orwell} alt="img" />
-                  <p className="bookTitle">1984</p>
-                  <p className="bookAuthor">by George Orwell</p>
-                </div>
-                <div className="book">
-                  <img src={tolstoy} alt="img" />
-                  <p className="bookTitle">War and Peace</p>
-                  <p className="bookAuthor">by Leo Tolstoy</p>
-                </div>
-                <div className="book">
-                  <img src={plato} alt="img" />
-                  <p className="bookTitle">The Republic</p>
-                  <p className="bookAuthor">by Plato</p>
-                </div>
+                <MainPageFeaturedBook
+                  bookImage={orwell}
+                  bookTitle={"1984"}
+                  bookAuthor={"George Orwell"}
+                  linkTo={`/catalog`}
+                  onClick={() => {
+                    this.changeActiveMenu("Catalog");
+                  }}
+                />
+
+                <MainPageFeaturedBook
+                  bookImage={kant}
+                  bookTitle={"the critique of pure reason"}
+                  bookAuthor={"Immanuel Kant"}
+                  linkTo={`/catalog`}
+                  onClick={() => {
+                    this.changeActiveMenu("Catalog");
+                  }}
+                />
+                <MainPageFeaturedBook
+                  bookImage={plato}
+                  bookTitle={"The Republic"}
+                  bookAuthor={"Plato"}
+                  linkTo={`/catalog`}
+                  onClick={() => {
+                    this.changeActiveMenu("Catalog");
+                  }}
+                />
+                <MainPageFeaturedBook
+                  bookImage={tolstoy}
+                  bookTitle={"War and Peace"}
+                  bookAuthor={"Leo Tolstoy"}
+                  linkTo={`/catalog`}
+                  onClick={() => {
+                    this.changeActiveMenu("Catalog");
+                  }}
+                />
               </>
             )}
+            {this.renderDefaultBooks(this.state.featured.length)}
             <div className="absoluteTriangle"></div>
           </div>
         </div>
@@ -78,4 +183,12 @@ class Featured extends Component {
   }
 }
 
-export default Featured;
+const mapStateToProps = state => ({
+  ...state
+});
+
+const mapDispatchToProps = dispatch => ({
+  ActiveMenuItem: value => dispatch(ActiveMenuItem(value))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Featured);

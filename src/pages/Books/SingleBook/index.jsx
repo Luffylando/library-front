@@ -8,21 +8,16 @@ import Button from "../../../components/Button";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import SVGInline from "react-svg-inline";
-import {
-  pencil,
-  backArrow,
-  x,
-  thumbUp,
-  thumbDown
-} from "../../../assets/icons";
+import { threeDots, thumbUp, thumbDown } from "../../../assets/icons";
 import * as moment from "moment";
 import { Formik } from "formik";
 import { store } from "react-notifications-component";
 import history from "../../../history";
 import { confirmAlert } from "react-confirm-alert"; // Import
 import defaultBook from "../../../assets/imgs/books/defaultBook.png";
+import ToggleMenu from "../../../components/ToggleMenu";
 
-export default class SingleBook extends Component {
+class SingleBook extends Component {
   constructor() {
     super();
     this.state = {
@@ -33,15 +28,15 @@ export default class SingleBook extends Component {
       edit: false,
       editId: null,
       commentToEdit: {},
-      likesCount: 0,
-      dislikesCount: 0,
       likesCount: null,
       dislikesCount: null,
       check: false,
       checkType: "",
       commentLikesCount: 0,
-      commentDislikesCount: 0
+      commentDislikesCount: 0,
+      toggleOptionMenu: false
     };
+    this.myRef = React.createRef();
   }
 
   async componentDidMount() {
@@ -94,6 +89,14 @@ export default class SingleBook extends Component {
       dislikesCount: dislikesCount
     });
   }
+
+  toggleOptionMenu = () => {
+    this.setState({ toggleOptionMenu: !this.state.toggleOptionMenu });
+  };
+
+  hideOptionMenu = () => {
+    this.setState({ toggleOptionMenu: false });
+  };
 
   deleteComment = async id => {
     await axios.delete(`http://localhost:4000/comments/delete/${id}`);
@@ -424,58 +427,55 @@ export default class SingleBook extends Component {
                 ></Button>
               </Link>
             </div>
-            <div className="bookBtns">
-              <Link
-                className="editBtn"
-                to={`/books/edit/${this.state.book.id}`}
-              >
-                <Button
-                  bgColor={"#3F5D88"}
-                  width={"200px"}
-                  padding={"10px 0px"}
-                  margin={"10px 5px"}
-                  fWeight={"600"}
-                  bRadius={"50px"}
-                  txtColor={"#fff"}
-                  hoverBg={"#fff"}
-                  hoverTxt={"#3F5D88"}
-                  transition={"all 0.3s"}
-                  hoverBorder={"1px solid #3F5D88"}
-                  btnText={"Edit Book"}
-                ></Button>
-              </Link>
-              <div
-                className="deleteBtn"
-                onClick={
-                  this.state.book.archived === 1
-                    ? () => {
-                        this.unarchiveBook();
+
+            {localStorage.getItem("userRole") === "admin" ? (
+              <>
+                <SVGInline
+                  svg={threeDots}
+                  onClick={() => {
+                    this.toggleOptionMenu();
+                  }}
+                  className={"toggleSvg"}
+                />
+                {this.state.toggleOptionMenu ? (
+                  <ToggleMenu
+                    id="move"
+                    top={"100px"}
+                    background={"#3F5D88"}
+                    color={"#fff"}
+                    right={"-50px"}
+                    padding={"10px 20px"}
+                    borderRadius={"5px"}
+                    border={"1px solid #000"}
+                    handleClickOutside={() => {
+                      this.hideOptionMenu();
+                    }}
+                    ref={this.myRef}
+                  >
+                    <Link
+                      className="editBtn"
+                      to={`/books/edit/${this.state.book.id}`}
+                    >
+                      <p>Edit</p>
+                    </Link>
+                    <div
+                      className="deleteBtn"
+                      onClick={
+                        this.state.book.archived === 1
+                          ? () => {
+                              this.unarchiveBook();
+                            }
+                          : () => {
+                              this.deleteBook();
+                            }
                       }
-                    : () => {
-                        this.deleteBook();
-                      }
-                }
-              >
-                <Button
-                  bgColor={"#3F5D88"}
-                  width={"200px"}
-                  padding={"10px 5px"}
-                  margin={"10px 0px"}
-                  fWeight={"600"}
-                  bRadius={"50px"}
-                  txtColor={"#fff"}
-                  hoverBg={"#fff"}
-                  hoverTxt={"#3F5D88"}
-                  transition={"all 0.3s"}
-                  hoverBorder={"1px solid #3F5D88"}
-                  btnText={
-                    this.state.book.archived === 1
-                      ? "Unarchive Book"
-                      : "Delete Book"
-                  }
-                ></Button>
-              </div>
-            </div>
+                    >
+                      <p>Delete</p>
+                    </div>
+                  </ToggleMenu>
+                ) : null}
+              </>
+            ) : null}
           </div>
 
           <div className="book">
@@ -489,10 +489,18 @@ export default class SingleBook extends Component {
             />
             <div className="bookDesc">
               <div className="desc">
-                <p>Author: {this.state.book.author}</p>
-                <p>Title: {this.state.book.title}</p>
-                <p>Genre: {this.state.book.genre}</p>
-                <p>Quote: "{this.state.book.quote}"</p>
+                <p>
+                  Author: <b>{this.state.book.author}</b>
+                </p>
+                <p>
+                  Title: <b>{this.state.book.title}</b>
+                </p>
+                <p>
+                  Genre: <b>{this.state.book.genre}</b>
+                </p>
+                <p>
+                  Quote: <b>"{this.state.book.quote}"</b>
+                </p>
                 <div
                   className={
                     this.state.book.status === 0
@@ -550,23 +558,79 @@ export default class SingleBook extends Component {
               </div>
               <div className="btns">
                 <button
-                  onClick={() => {
-                    this.submitBorrow(
-                      "Are You Sure",
-                      "You Want to Borrow This Book?"
-                    );
-                  }}
+                  onClick={
+                    localStorage.getItem("userId")
+                      ? () => {
+                          this.submitBorrow(
+                            "Are You Sure",
+                            "You Want to Borrow This Book?"
+                          );
+                        }
+                      : () => {
+                          store.addNotification({
+                            type: "danger",
+                            insert: "top",
+                            container: "top-right",
+                            animationIn: ["animated", "bounceIn"],
+                            animationOut: ["animated", "bounceOut"],
+                            dismiss: {
+                              duration: 5000,
+                              onScreen: false
+                            },
+                            content: (
+                              <div className="notification-custom-success">
+                                <div className="notification-custom-content">
+                                  <div className="notification-message">
+                                    <div className="message-header">
+                                      You must be logged in to use this
+                                      function.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          });
+                        }
+                  }
                   className="reserve"
                 >
                   Borrow{" "}
                 </button>
                 <button
-                  onClick={() => {
-                    this.submitBuy(
-                      "Are You Sure",
-                      "You Want to Buy This Book?"
-                    );
-                  }}
+                  onClick={
+                    localStorage.getItem("userId")
+                      ? () => {
+                          this.submitBuy(
+                            "Are You Sure",
+                            "You Want to Buy This Book?"
+                          );
+                        }
+                      : () => {
+                          store.addNotification({
+                            type: "danger",
+                            insert: "top",
+                            container: "top-right",
+                            animationIn: ["animated", "bounceIn"],
+                            animationOut: ["animated", "bounceOut"],
+                            dismiss: {
+                              duration: 5000,
+                              onScreen: false
+                            },
+                            content: (
+                              <div className="notification-custom-success">
+                                <div className="notification-custom-content">
+                                  <div className="notification-message">
+                                    <div className="message-header">
+                                      You must be logged in to use this
+                                      function.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          });
+                        }
+                  }
                   className="order"
                 >
                   Buy{" "}
@@ -583,6 +647,8 @@ export default class SingleBook extends Component {
                   <img
                     className="image"
                     src={`/team/${this.state.currentUser.image}`}
+                    alt={`${this.state.currentUser.image +
+                      localStorage.getItem("userId")}`}
                   />
                   <Formik
                     initialValues={{ comment: "" }}
@@ -752,3 +818,5 @@ export default class SingleBook extends Component {
     );
   }
 }
+
+export default SingleBook;

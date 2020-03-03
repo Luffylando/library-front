@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 const EventsStyle = styled.div`
   padding: 100px 400px;
+  background: #f9f8f8;
 
   .titleSection {
     .mainTitle {
@@ -22,7 +23,7 @@ const EventsStyle = styled.div`
   .eventsSection {
     display: flex;
     justify-content: space-between;
-    padding: 75px 0px;
+    padding: 75px 0px 0px 0px;
 
     .scheduleSection {
       flex-basis: 55%;

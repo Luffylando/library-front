@@ -36,7 +36,7 @@ class ArchivedMessages extends Component {
   }
 
   unarchiveMessage = async id => {
-    let data = { archived: null };
+    let data = { archived: false };
     await axios.put(`http://localhost:4000/contact/message/update/${id}`, data);
     this.componentDidMount();
   };
@@ -85,64 +85,62 @@ class ArchivedMessages extends Component {
             </Link>
           </div>
           {this.state.messages.length !== 0 ? (
-            <table className="ui celled table">
-              <thead className="">
-                <tr className="">
-                  <th className="">Fullname</th>
-                  <th className="">Email</th>
-                  <th className="">Message</th>
-                  <th className="">Status</th>
-                  <th className="">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="">
-                {this.state.messages.map(value => (
-                  <tr key={value.id} className="">
-                    <td className="">
-                      {value.lastName} {value.firstName}
-                    </td>
-                    <td className="">{value.email}</td>
-                    <td className="">{value.message}</td>
-                    <td className="">status to add...</td>
-                    <td className="actionBtn">
-                      <Button
-                        bgColor={"#3F5C88"}
-                        width={"180px"}
-                        padding={"10px 10px"}
-                        margin={"5px 10px 5px 0px"}
-                        fWeight={"600"}
-                        btnBorder={"1px solid gray"}
-                        fSize={"14px"}
-                        bRadius={"5px"}
-                        txtColor={"#fff"}
-                        hoverBg={"#fff"}
-                        hoverTxt={"#3F5C88"}
-                        transition={"all 0.3s"}
-                        hoverBorder={"1px solid #3F5C88"}
-                        btnText={"Click to Unarchive"}
-                        onClick={() => {
-                          this.unarchiveMessage(value.id);
-                        }}
-                      ></Button>
-                    </td>
+            <>
+              <table className="ui celled table">
+                <thead className="">
+                  <tr className="">
+                    <th className="">Fullname</th>
+                    <th className="">Email</th>
+                    <th className="">Message</th>
+                    <th className="">Status</th>
+                    <th className="">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="">
+                  {this.state.messages.map(value => (
+                    <tr key={value.id} className="">
+                      <td className="">
+                        {value.lastName} {value.firstName}
+                      </td>
+                      <td className="">{value.email}</td>
+                      <td className="">{value.message}</td>
+                      <td className="">status to add...</td>
+                      <td className="actionBtn">
+                        <Button
+                          bgColor={"#3F5C88"}
+                          width={"180px"}
+                          padding={"10px 10px"}
+                          margin={"5px 10px 5px 0px"}
+                          fWeight={"600"}
+                          btnBorder={"1px solid gray"}
+                          fSize={"14px"}
+                          bRadius={"5px"}
+                          txtColor={"#fff"}
+                          hoverBg={"#fff"}
+                          hoverTxt={"#3F5C88"}
+                          transition={"all 0.3s"}
+                          hoverBorder={"1px solid #3F5C88"}
+                          btnText={"Click to Unarchive"}
+                          onClick={() => {
+                            this.unarchiveMessage(value.id);
+                          }}
+                        ></Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <Pagination
+                paginationCount={this.state.messagesCount}
+                currentPage={parseInt(window.location.pathname.split("/")[4])}
+                url={`/contact/messages/archived`}
+                itemsPerPage={parseInt(this.state.itemsPerPage)}
+                activePage={parseInt(this.state.activePage)}
+              />
+            </>
           ) : (
-            "There are no more messages."
+            <p className="noMessages">There are no archived messages.</p>
           )}
-          {console.log(
-            'window.location.pathname.split("/")[4]',
-            window.location.pathname.split("/")[4]
-          )}
-          <Pagination
-            paginationCount={this.state.messagesCount}
-            currentPage={parseInt(window.location.pathname.split("/")[4])}
-            url={`/contact/messages/archived`}
-            itemsPerPage={parseInt(this.state.itemsPerPage)}
-            activePage={parseInt(this.state.activePage)}
-          />
         </MessageStyle>
         <Footer />
       </>

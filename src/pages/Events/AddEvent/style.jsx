@@ -1,129 +1,116 @@
 import styled from "styled-components";
+import leftCoverImage from "../../../assets/imgs/addBookCover.jpeg";
 
 const AddEventStyle = styled.div`
   min-height: calc(100vh - 215px);
-  padding: 100px 400px;
+  display: flex;
+  background: #f9f8f8;
 
-  h1 {
-    text-align: center;
-    margin: 0px 0px 50px 0px;
+  .leftCoverImage {
+    background-image: url(${leftCoverImage});
+    height: calc(100vh - 215px);
+    width: 30%;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: right top;
   }
 
   form {
-    padding: 20px 50px;
+    width: 70%;
+    padding: 0px 400px;
     display: flex;
+    justify-content: center;
     flex-direction: column;
 
-    .inputDiv {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 25px;
+    h2 {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 60px;
+    }
 
-      label {
-        font-size: 16px;
-        margin-bottom: 5px;
+    .row {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      flex-direction: row;
+
+      .inputField {
+        width: 46%;
+
+        input {
+          background: #f9f8f8;
+        }
       }
-      input {
-        height: 40px;
-        border: none;
-        border-bottom: 1px solid #d4d4d4;
-        font-size: 20px;
-        outline: none;
-        padding-left: 10px;
+    }
+
+    .rowSelect {
+      display: flex;
+      justify-content: space-between;
+      .selectDiv {
+        width: 48%;
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        input {
+          width: 95%;
+          border: none;
+          border: 1px solid #c4c4c4;
+          border-radius: 5px;
+          outline: none;
+          color: #444444;
+          padding: 10px;
+          background: #f9f8f8;
+        }
+
+        .selectField__control {
+          border: 1px solid #c4c4c4;
+          background: #f9f8f8;
+        }
+
+        .errorMsg {
+          top: 5px;
+          right: 0px;
+          z-index: 999999;
+          position: absolute;
+          color: #a93847;
+        }
+        label {
+          margin: 10px 0px;
+        }
       }
     }
 
     .textareaDiv {
+      width: 100%;
+
+      textarea {
+        background: #f9f8f8;
+      }
+    }
+
+    .fileDiv {
+      height: 35px;
+      width: fit-content;
+      margin: 20px 0px;
       display: flex;
-      flex-direction: column;
-      margin-bottom: 25px;
+      align-items: center;
+      justify-content: center;
 
       label {
+        margin-left: 20px;
+        padding: 10px 15px;
+        border: 1px solid #c4c4c4;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      p {
+        margin: 0px;
         font-size: 16px;
         margin-bottom: 5px;
       }
-      textarea {
-        height: 120px;
-        border: none;
-        border-bottom: 1px solid #d4d4d4;
-        font-size: 20px;
-        outline: none;
-        padding-left: 10px;
-      }
-    }
-
-    .selectAndFile {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      margin-bottom: 30px;
-      .selectDiv {
-        width: 49%;
-        height: 60px;
-
-        label {
-          font-size: 16px;
-        }
-
-        select {
-          border: none;
-          background: none;
-          width: 100%;
-          border: 1px solid #d4d4d4;
-          height: 40px;
-          outline: none;
-
-          option {
-          }
-        }
-      }
-
-      .fileDiv {
-        height: 60px;
-        width: fit-content;
-        margin-left: 20px;
-        display: flex;
-        flex-direction: column;
-
-        p {
-          margin: 0px;
-          font-size: 16px;
-          margin-bottom: 5px;
-        }
-
-        label {
-          font-size: 16px;
-          border: 1px solid #ccc;
-          display: inline-block;
-          cursor: pointer;
-          height: 40px;
-          display: flex;
-          align-items: center;
-          padding: 0px 20px;
-        }
-
-        .typeFile {
-        }
-
-        input[type="file"] {
-          display: none;
-        }
-      }
-    }
-
-    .submitBtn {
-      width: 100%;
-      text-align: center;
-      margin-top: 50px;
-      button {
-        border: none;
-        color: #fff;
-        font-size: 18px;
-        width: 100%;
-        padding: 10px 0px;
-        cursor: pointer;
-        background: #559564;
-        font-weight: bold;
+      input[type="file"] {
+        display: none;
       }
     }
   }

@@ -3,9 +3,7 @@ import bg from "../../../assets/imgs/paperBg.jpg";
 
 const CatalogStyle = styled.div`
   min-height: calc(100vh - 215px);
-  padding: 50px 500px;
-  display: flex;
-  flex-direction: column;
+  padding: 50px 390px;
   background-image: linear-gradient(
       rgba(255, 255, 255, 0.7), 
       rgba(255, 255, 255, 0.7)
@@ -13,23 +11,46 @@ const CatalogStyle = styled.div`
     position:relative;
 
     .adminAddBtn {
-      width: fit-content;
-      position:absolute;
-      right: 350px;
+      width: 100%;
+      display: flex;
+      justify-content:flex-end;
+      
      
     }
 
 
 h1 {
-  margin: 0px 0px 80px 0px;
+  margin: 0px 0px 40px 0px;
   text-align:center;
+}
+
+.booksCatalog {
+  margin: 20px 0px;
+  display: flex;
+  justify-content:center;
+  flex-wrap:wrap;
+
+
+  .noBooks {
+    display: flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    font-weight: 600;
+    font-size: 18px;
+    a {
+      margin: 20px;
+    }
+  }
 }
   .book {
     display: flex;
+    flex-direction:column;
     height: 320px;
-    margin-bottom: 40px;
+    margin: 40px 15px 60px 15px;
 
     img {
+    border-radius: 5px;
       height: 300px;
       width: 250px;
       border: 15px solid #3f5d88;
@@ -40,20 +61,34 @@ h1 {
       display: flex;
       flex-direction: column;
       justify-content:space-between;
-      padding: 10px 20px 20px 50px;
+      width: 250px;
 
-      p {
-        font-size: 18px;
-        margin: 0px;
-        margin-bottom: 10px;
-        font-weight: bold;
+
+        .title {
+          display: flex;
+              align-items:center;
+              justify-content:center;
+          font-size: 18px;
+          font-weight: bold;
+          text-align:center;
+          width: 100%;
+          margin-top: 10px;
+          margin-bottom: 10px;
+          color: #3f5d88;
+        
       }
 
-      .quote {
-        margin-bottom: 50px;
+      .author {
+        display: flex;
+              align-items:center;
+              justify-content:center;
+        font-size: 16px;
+          font-weight: bold;
+          text-align:center;
+          width: 100%;
+          margin: 0px;
       }
     }
-
   }
 `;
 

@@ -2,49 +2,58 @@ import React, { Fragment, useState, useEffect } from "react";
 import EditUserStyle from "./style";
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { Formik } from "formik";
-import H1 from "../../../ui/H1";
+import H2 from "../../../ui/H2";
 import * as moment from "moment";
-
-const options = [
-  { id: "female", name: "Female" },
-  { id: "male", name: "Male" }
-];
+import InputValidationField from "../../../components/InputValidationField";
+import DatePicker from "react-datepicker";
+import Button from "../../../components/Button";
 
 const EditUser = props => {
-  const [user, setUser] = useState("");
   const [file, setFile] = useState("");
   const [filename, setFilename] = useState("Chose File");
   const [uploadedFile, setUploadedFile] = useState({});
-  const apiUrl =
-    "http://localhost:4000/users/" + window.location.pathname.split("/")[3];
+  const [validate, setValidate] = useState(false);
+
+  const initialEventState = {
+    firstName: "",
+    lastName: "",
+    dob: "",
+    image: ""
+  };
+
+  const [user, setUser] = useState(initialEventState);
+  const [startDate, setStartDate] = useState(new Date());
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get(apiUrl);
+      const result = await axios.get(
+        `http://localhost:4000/users/${window.location.pathname.split("/")[3]}`
+      );
       setUser(result.data);
+      setStartDate(result.data.dob);
     };
     fetchData();
   }, []);
+
+  const onChange = e => {
+    setFile(e.target.files[0]);
+    setFilename(e.target.files[0].name);
+  };
 
   const changeNow = e => {
     e.persist();
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
-  const changeImage = e => {
-    setFile(e.target.files[0]);
-    setFilename(e.target.files[0].name);
-  };
-
   return (
     <Fragment>
       <Header />
       <EditUserStyle>
-        <H1>Edit user</H1>
+        <div className="leftCoverImage"></div>
         <Formik
-          initialValues={{ firstName: "", lastName: "" }}
+          initialValues={{ firstName: "", lastName: "", dob: "", image: "" }}
           onSubmit={async (values, { setSubmitting }) => {
             if (file) {
               const formData = new FormData();
@@ -61,15 +70,13 @@ const EditUser = props => {
                 );
                 const { filePath, fullName } = res.data;
 
-                console.log("fullname", fullName);
-
                 setUploadedFile({ fullName, filePath });
                 const data = {
                   firstName: user.firstName,
                   lastName: user.lastName,
                   gender: user.gender,
                   email: user.email,
-                  dob: user.dob.slice(0, 10),
+                  dob: moment(startDate).format("YYYY-MM-DD"),
                   image: fullName
                 };
 
@@ -94,7 +101,7 @@ const EditUser = props => {
                   lastName: user.lastName,
                   gender: user.gender,
                   email: user.email,
-                  dob: user.dob.slice(0, 10),
+                  dob: moment(startDate).format("YYYY-MM-DD"),
                   image: user.image
                 };
 
@@ -126,106 +133,111 @@ const EditUser = props => {
             handleChange,
             handleBlur,
             handleSubmit,
+            validateForm,
             isSubmitting
-            /* and other goodies */
           }) => (
             <form onSubmit={handleSubmit}>
-              <div className="inputDiv">
-                <div className="labelInput">
-                  <label>First Name</label>
-                  <input
+              <H2>Edit User</H2>
+              <div className="row">
+                <div className="inputField">
+                  <InputValidationField
+                    label="First Name"
                     type="text"
                     name="firstName"
                     onChange={changeNow}
                     onBlur={handleBlur}
-                    value={user.firstName ? user.firstName : values.firstName}
+                    value={values.firstName ? values.firstName : user.firstName}
+                    errors={errors.firstName}
+                    touched={touched.firstName}
                   />
                 </div>
-                <div className="error">
-                  {errors.firstName && touched.firstName && errors.firstName}
-                </div>
-              </div>
-              <div className="inputDiv">
-                <div className="labelInput">
-                  <label>Last Name</label>
-                  <input
+                <div className="inputField">
+                  <InputValidationField
+                    label="Last Name"
                     type="text"
                     name="lastName"
                     onChange={changeNow}
                     onBlur={handleBlur}
-                    value={user.lastName ? user.lastName : values.lastName}
+                    value={values.lastName ? values.lastName : user.lastName}
+                    errors={errors.lastName}
+                    touched={touched.lastName}
                   />
                 </div>
-                <div className="error">
-                  {errors.lastName && touched.lastName && errors.lastName}
-                </div>
               </div>
-              <div className="inputDiv">
-                <div className="labelInput">
+
+              <div className="rowSelect">
+                <div className="selectDiv">
                   <label>Date of Birth</label>
-                  <input
-                    type="date"
+                  <DatePicker
+                    showMonthDropdown
+                    showYearDropdown
+                    onChange={date => setStartDate(date)}
                     name="dob"
-                    onChange={changeNow}
-                    onBlur={handleBlur}
                     value={
-                      user.dob
-                        ? moment(user.dob).format("YYYY-MM-DD")
-                        : values.dob
+                      startDate
+                        ? moment(startDate).format("DD-MM-YYYY")
+                        : moment(user.dob).format("DD-MM-YYYY")
                     }
                   />
                 </div>
-                <div className="error">
-                  {errors.dob && touched.dob && errors.dob}
-                </div>
               </div>
-              <div className="inputDiv">
-                <div className="labelInput">
-                  <label>Email</label>
-                  <input
-                    type="text"
-                    name="email"
-                    value={user.email ? user.email : values.email}
-                    onChange={changeNow}
-                    onBlur={handleBlur}
-                  />
-                </div>
-                <div className="error">
-                  {errors.email && touched.email && errors.email}
-                </div>
-              </div>
-              <div className="selectAndFile">
-                <div className="fileDiv">
-                  <p>Pick New Image:</p>
+              <div className="rowSelect">
+                <div className="inputField">
+                  <div className="fileDiv">
+                    <p>Pick New User Image:</p>
 
-                  <label htmlFor="customFile">{filename}</label>
-                  <div htmlFor="customFile" className="typeFile">
-                    <input
-                      type="file"
-                      name="file"
-                      className="custom-file-input"
-                      id="customFile"
-                      placeholder="Upload an Image"
-                      onChange={changeImage}
-                    />
-                    <div className="error">
-                      {errors.image && touched.image && errors.image}
+                    <label htmlFor="customFile">{filename}</label>
+                    <div htmlFor="customFile" className="typeFile">
+                      <input
+                        type="file"
+                        name="file"
+                        className="custom-file-input"
+                        id="customFile"
+                        placeholder="Upload an Image"
+                        onChange={onChange}
+                      />
+                      <div className="error">
+                        {errors.image && touched.image && errors.image}
+                      </div>
                     </div>
                   </div>
                 </div>
-                <div className="editImage">
-                  <label>Current Image:</label>
-                  <img
-                    className="chosenImg"
-                    alt={`${user.image}${user.id}`}
-                    src={user.image ? `/team/${user.image}` : null}
-                  ></img>
-                </div>
+                {user.image ? (
+                  <div className="editImage">
+                    <label>Current Image:</label>
+                    <img
+                      className="chosenImg"
+                      alt={`${user.image}${user.id}`}
+                      src={user.image ? `../../../team/${user.image}` : null}
+                    ></img>
+                  </div>
+                ) : null}
               </div>
               <div className="submitBtn">
-                <button type="submit" disabled={isSubmitting}>
-                  Submit
-                </button>
+                <Button
+                  bgColor={"#3F5D88"}
+                  width={"100%"}
+                  padding={"15px 0px"}
+                  margin={"15px 0px"}
+                  fWeight={"600"}
+                  fSize={"16px"}
+                  bRadius={"50px"}
+                  letterSpacing={"1px"}
+                  txtColor={"#fff"}
+                  hoverBg={"#fff"}
+                  hoverTxt={"#3F5D88"}
+                  transition={"all 0.3s"}
+                  hoverBorder={"1px solid #3F5D88"}
+                  btnText={"Edit"}
+                  type={"submit"}
+                  disabled={isSubmitting}
+                  onClick={() => {
+                    validateForm().then(() => setValidate(true));
+                    setTimeout(() => {
+                      setValidate(false);
+                    }, 500);
+                  }}
+                ></Button>
               </div>
             </form>
           )}

@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import CommentStyle from "./style";
-import { x, pencil, thumbDown, thumbUp } from "../../assets/icons";
+import { x, pencil } from "../../assets/icons";
 import SVGInline from "react-svg-inline";
-import { hydrate } from "react-dom";
 import { Formik } from "formik";
-import { store } from "react-notifications-component";
 import Button from "../../components/Button";
 
 export default class Comment extends Component {
@@ -29,7 +27,11 @@ export default class Comment extends Component {
   render() {
     return (
       <CommentStyle>
-        <img className="image" src={`${this.props.image}`} />
+        <img
+          className="image"
+          src={`${this.props.image}`}
+          alt={`${this.props.image}`}
+        />
         <div className="infoSection">
           <div className="nameDate">
             <div className="fullName">{this.props.fullName}</div>
@@ -111,18 +113,6 @@ export default class Comment extends Component {
           ) : (
             <div className="comment">{this.props.comment}</div>
           )}
-          {/* <div className="commentLikes">
-            <div className="up">
-              <SVGInline svg={thumbUp} />
-              <p>Likes</p>
-              <p>{this.props.commentLikesCount}</p>
-            </div>
-            <div className="down">
-              <SVGInline svg={thumbDown} />
-              <p>Dislikes</p>
-              <p>{this.props.commentDislikedCount}</p>
-            </div>
-          </div> */}
         </div>
       </CommentStyle>
     );

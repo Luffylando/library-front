@@ -1,121 +1,125 @@
 import styled from "styled-components";
+import leftCoverImage from "../../assets/imgs/addBookCover.jpeg";
 
 const RegisterStyle = styled.div`
   min-height: calc(100vh - 215px);
-  padding: 30px 450px;
   display: flex;
-  justify-content: center;
+  background: #f9f8f8;
+
+  .leftCoverImage {
+    background-image: url(${leftCoverImage});
+    height: calc(100vh - 215px);
+    width: 30%;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: right top;
+  }
 
   form {
+    width: 70%;
+    padding: 0px 400px;
     display: flex;
+    justify-content: center;
     flex-direction: column;
-    width: 650px;
-    border-radius: 5px;
-    margin: 40px;
-    background: #fff;
-    align-items: center;
-    border: 1px solid #000;
 
-    .labelForm {
+    h2 {
       width: 100%;
-      border-bottom: 1px solid #000;
-      padding: 15px 30px;
-      font-weight: 600;
-      font-size: 15px;
+      text-align: center;
+      margin-bottom: 60px;
     }
-    .fields {
-      padding: 40px 50px;
+
+    .row {
       width: 100%;
-      .inputRow {
+      display: flex;
+      justify-content: space-between;
+      flex-direction: row;
+
+      .selectDiv {
+        width: 45%;
         display: flex;
-        justify-content: space-between;
-        div {
-          flex-basis: 49%;
-          input {
-            width: 100%;
-            border: none;
-            border: 1px solid #c4c4c4;
-            height: 40px;
-            border-radius: 5px;
-            padding: 0px 5px;
-            margin: 5px 0px;
+        flex-direction: column;
+        input {
+          width: 100%;
+          border: none;
+          border-bottom: 1px solid #c4c4c4;
+          outline: none;
+          color: #444444;
+          padding: 0px 0px;
+          height: 25px;
+          background: #f9f8f8;
+        }
+        label {
+          margin: 10px 0px;
+        }
+
+        .selectField__control {
+          border: 1px solid #c4c4c4;
+        }
+
+        .errorMsg {
+          top: 5px;
+          right: 0px;
+          z-index: 999999;
+          position: absolute;
+          color: #a93847;
+        }
+      }
+
+      .inputField {
+        width: 45%;
+        margin: 15px 0px;
+        input {
+          background: #f9f8f8;
+        }
+      }
+
+      .radioField {
+        display: flex;
+        flex-direction: column;
+        width: 55%;
+
+        .inputField {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          input[type="radio"] {
+            width: 120px;
           }
         }
       }
-    }
 
-    input {
-      width: 100%;
-      border: none;
-      border: 1px solid #c4c4c4;
-      height: 40px;
-      border-radius: 5px;
-      padding: 0px 5px;
-      margin: 5px 0px;
-    }
-    .errorsShow {
-      top: 15px;
-    }
-
-    .inputRow {
-      .radioRow {
-        padding: 20px 0px;
-        input[type="radio"] {
-          height: 15px;
-          width: 30px !important;
-          margin-right: 0px;
+      .textareaDiv {
+        width: 100%;
+        textarea {
+          background: #f9f8f8;
         }
       }
+
       .fileDiv {
-        height: 60px;
-        width: fit-content;
-        margin-left: 20px;
+        width: 45%;
+        height: 35px;
+        margin: 20px 0px;
         display: flex;
-        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+
+        label {
+          margin-left: 20px;
+          padding: 10px 15px;
+          border: 1px solid #c4c4c4;
+          border-radius: 5px;
+          cursor: pointer;
+        }
 
         p {
           margin: 0px;
           font-size: 16px;
           margin-bottom: 5px;
         }
-
-        label {
-          font-size: 16px;
-          border: 1px solid #ccc;
-          display: inline-block;
-          cursor: pointer;
-          height: 40px;
-          display: flex;
-          align-items: center;
-          padding: 0px 20px;
-        }
-
-        .typeFile {
-        }
-
         input[type="file"] {
           display: none;
         }
-      }
-    }
-    .regBtn {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      padding: 0px 105px 20px 105px;
-      text-align: right;
-
-      a {
-        text-decoration: underline;
-      }
-
-      .btn {
-        border: none;
-        padding: 10px 20px;
-        background: #3f5c88;
-        border-radius: 5px;
-        color: #fff;
-        cursor: pointer;
       }
     }
   }

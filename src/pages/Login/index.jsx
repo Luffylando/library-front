@@ -2,14 +2,13 @@ import React, { Component } from "react";
 import LoginStyle from "./style";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { eye, cEye } from "../../assets/icons";
-import SVGInline from "react-svg-inline";
 import axios from "axios";
-import { Form, Input } from "@rocketseat/unform";
 import { Formik } from "formik";
 import { store } from "react-notifications-component";
 import LoginSchema from "./validation";
 import InputValidationField from "../../components/InputValidationField";
+import H2 from "../../ui/H2";
+import Button from "../../components/Button";
 
 export default class Login extends Component {
   constructor(props) {
@@ -19,7 +18,8 @@ export default class Login extends Component {
       email: "",
       password: "",
       errorMsg: "",
-      hidden: true
+      hidden: true,
+      validate: false
     };
   }
 
@@ -32,6 +32,8 @@ export default class Login extends Component {
       <>
         <Header />
         <LoginStyle>
+          <div className="leftCoverImage"></div>
+
           <Formik
             initialValues={{
               email: "",
@@ -123,68 +125,69 @@ export default class Login extends Component {
               handleBlur,
               handleSubmit,
               isSubmitting
-              /* and other goodies */
             }) => (
               <>
-                <div className="loginBox">
-                  <h1>
-                    Login<span className="borderBottom"></span>
-                  </h1>
-                  <Form onSubmit={handleSubmit}>
-                    <div className="inputBox">
-                      <InputValidationField
-                        label="Email"
-                        type="text"
-                        name="email"
-                        placehodler="Email"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values.email}
-                        errors={errors.email}
-                        touched={touched.email}
-                      />
-                      <div className="divInput">
-                        <InputValidationField
-                          label="Password"
-                          type="password"
-                          name="password"
-                          placehodler="Password"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.password}
-                          errors={errors.password}
-                          touched={touched.password}
-                        />
-                        {/* {this.state.password.length !== 0 ? (
-                          <SVGInline
-                            onClick={this.triggerEye}
-                            svg={this.state.hidden ? cEye : eye}
-                            title={"Hold to see password"}
-                          />
-                        ) : null} */}
-                      </div>
-                    </div>
-                    <div className="btnArea">
-                      {this.state.errorMsg ? (
-                        <p className="errorMsg">{this.state.errorMsg}</p>
-                      ) : null}
-                      <input
-                        type="submit"
-                        onClick={() => {
-                          validateForm().then(() =>
-                            this.setState({ validate: true })
-                          );
+                <form onSubmit={handleSubmit}>
+                  <H2>Login</H2>
+                  <div className="inputField">
+                    <InputValidationField
+                      label="Email"
+                      type="text"
+                      name="email"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.email}
+                      errors={errors.email}
+                      touched={touched.email}
+                    />
+                  </div>
+                  <div className="inputField">
+                    <InputValidationField
+                      label="Password"
+                      type="password"
+                      name="password"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.password}
+                      errors={errors.password}
+                      touched={touched.password}
+                    />
+                  </div>
+                  <Button
+                    bgColor={"#3F5D88"}
+                    width={"65%"}
+                    padding={"15px 0px"}
+                    margin={"50px 100px 20px 100px"}
+                    fWeight={"600"}
+                    fSize={"16px"}
+                    bRadius={"50px"}
+                    letterSpacing={"1px"}
+                    txtColor={"#fff"}
+                    hoverBg={"#fff"}
+                    hoverTxt={"#3F5D88"}
+                    transition={"all 0.2s"}
+                    hoverBorder={"1px solid #3F5D88"}
+                    btnText={"Login"}
+                    type={"submit"}
+                    disabled={isSubmitting}
+                    onClick={() => {
+                      validateForm().then(() =>
+                        this.setState({ validate: true })
+                      );
 
-                          setTimeout(() => {
-                            this.setState({ validate: false });
-                          }, 500);
-                        }}
-                        disabled={isSubmitting}
-                        value="Login"
-                      />
-                    </div>
-                  </Form>
-                </div>
+                      setTimeout(() => {
+                        this.setState({ validate: false });
+                      }, 500);
+                      this.setState({ errorMsg: "" });
+                      setTimeout(() => {
+                        this.setState({ errorMsg: "" });
+                      }, 7000);
+                    }}
+                  ></Button>
+                  {this.state.errorMsg ? (
+                    <div className="errorMsg">{this.state.errorMsg}</div>
+                  ) : null}
+                </form>
               </>
             )}
           </Formik>

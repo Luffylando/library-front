@@ -5,6 +5,7 @@ import { logo, fb, ins, tw, li } from "../../assets/icons";
 import H1 from "../../ui/H1";
 import P from "../../ui/P";
 import FooterSection from "../../components/FooterSection";
+import ScrollUpButton from "../../components/ScrollUpButton";
 
 export default class Footer extends Component {
   render() {
@@ -20,9 +21,9 @@ export default class Footer extends Component {
             </div>
 
             <div className="address">
-              <P>Address 19-20</P>
-              <P>Lorem Ipsum, Serbia</P>
-              <P>+381 *** ****</P>
+              <P>Tolstojeva 12 </P>
+              <P>Beograd, Serbia</P>
+              <P>+381 111 333</P>
               <P>contact@luffyslibrary.com</P>
             </div>
           </div>
@@ -31,26 +32,30 @@ export default class Footer extends Component {
             <FooterSection
               number={"01"}
               mainTitle={"Home"}
-              item1={"Lorem Ipsum"}
-              item2={"Lorem Ipsum"}
+              item1={"Books"}
+              item2={"Events"}
+              item1Link={"/catalog"}
+              item2Link={"/events"}
             />
             <FooterSection
               number={"02"}
               mainTitle={"Catalog"}
-              item1={"Lorem Ipsum"}
-              item2={"Lorem Ipsum"}
-              item3={"Lorem Ipsum"}
+              item1={"Books"}
+              item1Link={"/catalog"}
             />
             <FooterSection
               number={"03"}
               mainTitle={"Contact"}
-              item1={"Lorem Ipsum"}
+              item1={"Contact Form"}
+              item1Link={"/contact"}
             />
             <FooterSection
               number={"04"}
               mainTitle={"About"}
-              item1={"Lorem Ipsum"}
-              item2={"Lorem Ipsum"}
+              item1={"About us"}
+              item2={"Contact us"}
+              item1Link={"/about"}
+              item2Link={"/contact"}
             />
           </div>
         </div>
@@ -59,12 +64,21 @@ export default class Footer extends Component {
             Luffy’s Library - All Rights Reserved - {currentYear}
           </div>
           <div className="socialIcons">
-            <SVGInline svg={fb} />
-            <SVGInline svg={ins} />
-            <SVGInline svg={tw} />
-            <SVGInline svg={li} />
+            <a href="http://facebook.com">
+              <SVGInline svg={fb} />
+            </a>
+            <a href="http://instagram.com">
+              <SVGInline svg={ins} />
+            </a>
+            <a href="http://twitter.com">
+              <SVGInline svg={tw} />
+            </a>
+            <a href="http://linkedin.com">
+              <SVGInline svg={li} />
+            </a>
           </div>
         </div>
+        <ScrollUpButton />
       </FooterStyle>
     );
   }

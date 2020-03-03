@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
 const HeaderStyle = styled.div`
+  width: 100%;
+  background: #f9f8f8;
   .header {
     display: flex;
     align-items: center;
@@ -61,7 +63,8 @@ const HeaderStyle = styled.div`
             border: none;
             padding-left: 20px;
             height: 55px;
-            outline:none;
+            outline: none;
+            background: #f9f8f8;
           }
           .sortBy {
             display: flex;
@@ -71,13 +74,15 @@ const HeaderStyle = styled.div`
               width: 150px;
               margin-right: 10px;
 
-           .selectField__control{
-             outline-color: red;
-              border:none;
-           }
-           .selectField__dropdown-indicator{
-             padding-right: 0px;
-           }
+              .selectField__control {
+                background: #f9f8f8;
+                outline-color: red;
+                border: none;
+                cursor: pointer;
+              }
+              .selectField__dropdown-indicator {
+                padding-right: 0px;
+              }
             }
           }
           .goButton {
@@ -106,6 +111,7 @@ const HeaderStyle = styled.div`
         border-bottom: 1px solid #ddd;
         padding: 0px 30px;
         cursor: pointer;
+        position: relative;
 
         .accountImage {
           width: 25px;
@@ -129,64 +135,58 @@ const HeaderStyle = styled.div`
         .arrow {
           display: flex;
           align-items: center;
-          i {
-            margin-left: 15px;
-            border: solid black;
-            border-width: 0 3px 3px 0;
-            display: inline-block;
-            padding: 3px;
-            .down {
-              transform: rotate(45deg);
-              -webkit-transform: rotate(45deg);
+          position: absolute;
+          right: 15px;
+          svg {
+            width: 16px;
+            height: 16px;
+            path: {
+              fill: #3f5c88;
             }
           }
         }
       }
 
-          .submenuWindow {
-            position: absolute;
-            background: #fff;
-            border: 1px solid #f5f5f5;
-            border-radius: 10px;
-            width: 230px;
-            right: 0;
-            top: 50px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+      .submenuWindow {
+        position: absolute;
+        background: #f15925;
+        font-weight: 600;
+        border-radius: 5px;
+        width: 230px;
+        right: 0;
+        top: 50px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 99;
 
-            a {
-              margin: 0px;
-              border: 1px solid gray;
-              padding: 5px 0px;
-              display: flex;
-              justify-content: center;
-              width: 100%;
+        a {
+          margin: 0px;
+          padding: 10px 0px;
+          display: flex;
+          justify-content: center;
+          width: 100%;
+          border-bottom: 1px solid #fff;
 
-              :hover {
-                text-decoration: underline;
-              }
+          :hover {
+            text-decoration: underline;
+            text-decoration-color: #fff;
+          }
 
-              p {
-                color: #000;
-                font-size: 14px;
-                font-weight: 100;
-
-                span {
-                }
-              }
-            }
+          p {
+            color: #fff;
+            font-size: 14px;
           }
         }
-        svg {
-          width: 20px;
-          height: 20px;
-          margin-right: 20px;
-          path {
-            fill: #3d5c89;
-          }
-        }
+      }
+    }
+    svg {
+      width: 20px;
+      height: 20px;
+      margin-right: 20px;
+      path {
+        fill: #3d5c89;
       }
     }
   }

@@ -84,86 +84,80 @@ class Messages extends Component {
             </Link>
           </div>
           {this.state.messages.length !== 0 ? (
-            <table className="ui celled table">
-              <thead className="">
-                <tr className="">
-                  <th className="">Fullname</th>
-                  <th className="">Email</th>
-                  <th className="">Message</th>
-                  <th className="">Status</th>
-                  <th className="">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="">
-                {this.state.messages.map(value => (
-                  <tr key={value.id} className="">
-                    <td className="">
-                      {value.lastName} {value.firstName}
-                    </td>
-                    <td className="">{value.email}</td>
-                    <td className="">{value.message}</td>
-                    <td className="">status to add...</td>
-                    <td className="tableActionBtns">
-                      <Link to={`/contact/messages/${value.id}`}>
+            <>
+              <table className="ui celled table">
+                <thead className="">
+                  <tr className="">
+                    <th className="">Fullname</th>
+                    <th className="">Email</th>
+                    <th className="">Message</th>
+                    <th className="">Status</th>
+                    <th className="">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="">
+                  {this.state.messages.map(value => (
+                    <tr key={value.id} className="">
+                      <td className="">
+                        {value.lastName} {value.firstName}
+                      </td>
+                      <td className="">{value.email}</td>
+                      <td className="">{value.message}</td>
+                      <td className="">status to add...</td>
+                      <td className="tableActionBtns">
+                        <Link to={`/contact/messages/${value.id}`}>
+                          <Button
+                            bgColor={"#F15925"}
+                            padding={"10px 10px"}
+                            margin={"5px 10px 5px 0px"}
+                            fWeight={"600"}
+                            btnBorder={"1px solid #fff"}
+                            fSize={"14px"}
+                            bRadius={"5px"}
+                            txtColor={"#fff"}
+                            hoverBg={"#fff"}
+                            hoverTxt={"#F15925"}
+                            transition={"all 0.3s"}
+                            hoverBorder={"1px solid #F15925"}
+                            btnText={"Answer"}
+                          ></Button>
+                        </Link>
                         <Button
-                          bgColor={"#F15925"}
+                          bgColor={"#3F5D88"}
                           padding={"10px 10px"}
-                          margin={"5px 10px 5px 0px"}
+                          margin={"5px 0px"}
                           fWeight={"600"}
                           btnBorder={"1px solid #fff"}
                           fSize={"14px"}
                           bRadius={"5px"}
                           txtColor={"#fff"}
                           hoverBg={"#fff"}
-                          hoverTxt={"#F15925"}
+                          hoverTxt={"#3F5D88"}
                           transition={"all 0.3s"}
-                          hoverBorder={"1px solid #F15925"}
-                          btnText={"Answer"}
+                          hoverBorder={"1px solid #3F5D88"}
+                          btnText={"Archive"}
+                          onClick={() => {
+                            this.archiveMessage(value.id);
+                          }}
                         ></Button>
-                      </Link>
-                      <Button
-                        bgColor={"#3F5D88"}
-                        padding={"10px 10px"}
-                        margin={"5px 0px"}
-                        fWeight={"600"}
-                        btnBorder={"1px solid #fff"}
-                        fSize={"14px"}
-                        bRadius={"5px"}
-                        txtColor={"#fff"}
-                        hoverBg={"#fff"}
-                        hoverTxt={"#3F5D88"}
-                        transition={"all 0.3s"}
-                        hoverBorder={"1px solid #3F5D88"}
-                        btnText={"Archive"}
-                        onClick={() => {
-                          this.archiveMessage(value.id);
-                        }}
-                      ></Button>
-                      {/* <button
-                        onClick={() => {
-                          this.archiveMessage(value.id);
-                        }}
-                        className="ui red button"
-                      >
-                        Archive
-                      </button> */}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <Pagination
+                paginationCount={
+                  this.state.messagesCount ? this.state.messagesCount : []
+                }
+                currentPage={window.location.pathname.split("/")[3]}
+                url={`/contact/messages`}
+                itemsPerPage={parseInt(this.state.itemsPerPage)}
+                activePage={parseInt(this.state.activePage)}
+              />
+            </>
           ) : (
-            "There are no more messages."
+            <p className="noMessages">There are no messages.</p>
           )}
-          <Pagination
-            paginationCount={
-              this.state.messagesCount ? this.state.messagesCount : []
-            }
-            currentPage={window.location.pathname.split("/")[3]}
-            url={`/contact/messages`}
-            itemsPerPage={parseInt(this.state.itemsPerPage)}
-            activePage={parseInt(this.state.activePage)}
-          />
         </MessageStyle>
         <Footer />
       </>

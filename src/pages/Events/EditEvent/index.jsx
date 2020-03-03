@@ -4,22 +4,52 @@ import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
 import InputValidationField from "../../../components/InputValidationField";
 import TextareaValidationField from "../../../components/TextareaValidationField";
-import SelectValidationField from "../../../components/SelectValidationField";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { Formik } from "formik";
-import H1 from "../../../ui/H1";
-// import EditEventValidation from "./validation";
+import H2 from "../../../ui/H2";
 import Button from "../../../components/Button";
 import DatePicker from "react-datepicker";
 import * as moment from "moment";
+import Select from "react-select";
+
+const options = [
+  { value: true, label: "Highlight" },
+  { value: false, label: "Normal" }
+];
+
+const customStyles = {
+  option: (styles, state) => ({
+    ...styles,
+    color: state.isSelected ? "#FFF" : styles.color,
+    backgroundColor: state.isSelected ? "#559564" : styles.color,
+    borderBottom: "1px solid rgba(0, 0, 0, 0.125)",
+    border: "none",
+
+    "&:hover": {
+      color: "#FFF",
+      backgroundColor: "#F68282",
+      border: "none"
+    },
+    height: "fit-content"
+  }),
+  control: (styles, state) => ({
+    ...styles,
+    boxShadow: "none",
+    borderColor: "none",
+    border: "none",
+    "&:hover": {
+      borderColor: state.isFocused ? "#D0EAE2" : "#CED4DA"
+    }
+  })
+};
 
 const EditEvent = props => {
-  const apiUrl =
-    "http://localhost:4000/events/" + window.location.pathname.split("/")[3];
   const [file, setFile] = useState("");
   const [filename, setFilename] = useState("Chose File");
-  const [uploadedFile, setUploadedFile] = useState({});
+  const [uploadFile, setUploadedFile] = useState({});
   const [validate, setValidate] = useState(false);
+  let [selectedOption, setSelectedOption] = useState({});
+
   const initialEventState = {
     eventName: "",
     eventCreator: "",
@@ -37,9 +67,16 @@ const EditEvent = props => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get(apiUrl);
+      const result = await axios.get(
+        `http://localhost:4000/events/${window.location.pathname.split("/")[3]}`
+      );
       setEvent(result.data);
       setStartDate(result.data.eventDate);
+      setSelectedOption(
+        result.data.highlighted === 1
+          ? { label: "Highlight", value: true }
+          : { label: "Normal", value: false }
+      );
     };
     fetchData();
   }, []);
@@ -54,11 +91,15 @@ const EditEvent = props => {
     setEvent({ ...event, [e.target.name]: e.target.value });
   };
 
+  const handleSelectChange = chosenOption => {
+    setSelectedOption(chosenOption);
+  };
+
   return (
     <Fragment>
       <Header />
       <EditEventStyle>
-        <H1>Edit Event</H1>
+        <div className="leftCoverImage"></div>
         <Formik
           initialValues={{
             eventName: "",
@@ -68,7 +109,6 @@ const EditEvent = props => {
           }}
           // validationSchema={validate === true ? EditBookValidation : null}
           onSubmit={async (values, { setSubmitting }) => {
-            console.log("event", event);
             const formData = new FormData();
             formData.append("file", file);
             if (file) {
@@ -91,7 +131,8 @@ const EditEvent = props => {
                   eventDescription: event.eventDescription,
                   eventCreator: event.eventCreator,
                   eventDate: moment(startDate).format("YYYY-MM-DD HH:mm:ss"),
-                  eventImage: fullName
+                  eventImage: fullName,
+                  highlighted: selectedOption.value
                 };
 
                 await axios
@@ -121,7 +162,8 @@ const EditEvent = props => {
                   eventDescription: event.eventDescription,
                   eventCreator: event.eventCreator,
                   eventDate: moment(startDate).format("YYYY-MM-DD HH:mm:ss"),
-                  eventImage: event.image
+                  eventImage: event.image,
+                  highlighted: selectedOption.value
                 };
 
                 await axios
@@ -159,20 +201,23 @@ const EditEvent = props => {
             /* and other goodies */
           }) => (
             <form onSubmit={handleSubmit}>
-              <div className="inputDiv">
-                <InputValidationField
-                  label="Event Name"
-                  type="text"
-                  name="eventName"
-                  placehodler="Event Name"
-                  onChange={changeNow}
-                  value={values.eventName ? values.eventName : event.eventName}
-                  errors={errors.eventName}
-                  touched={touched.eventName}
-                />
-              </div>
-              <div className="inputDiv">
-                <div className="inputDiv">
+              <H2>Edit Event</H2>
+              <div className="row">
+                <div className="inputField">
+                  <InputValidationField
+                    label="Event Name"
+                    type="text"
+                    name="eventName"
+                    placehodler="Event Name"
+                    onChange={changeNow}
+                    value={
+                      values.eventName ? values.eventName : event.eventName
+                    }
+                    errors={errors.eventName}
+                    touched={touched.eventName}
+                  />
+                </div>
+                <div className="inputField">
                   <InputValidationField
                     label="Event Creator"
                     type="text"
@@ -190,53 +235,74 @@ const EditEvent = props => {
                   />
                 </div>
               </div>
-              <div className="textareaDiv">
-                <TextareaValidationField
-                  label="Event Description"
-                  name="eventDescription"
-                  placehodler="Event Description"
-                  onChange={changeNow}
-                  onBlur={handleBlur}
-                  value={
-                    values.eventDescription
-                      ? values.eventDescription
-                      : event.eventDescription
-                  }
-                  errors={errors.eventDescription}
-                  touched={touched.eventDescription}
-                />
-                <DatePicker
-                  showTimeSelect
-                  // selected={event.eventDate ? event.eventDate : startDate}
-                  onChange={date => setStartDate(date)}
-                  timeFormat="HH:mm"
-                  timeClassName={handleColor}
-                  name="eventDate"
-                  value={
-                    startDate
-                      ? moment(startDate).format("DD-MM-YYYY HH:mm")
-                      : moment(event.eventDate).format("DD-MM-YYYY HH:mm")
-                  }
-                />
+              <div className="rowSelect">
+                <div className="selectDiv">
+                  <label>Event Date</label>
+                  <DatePicker
+                    showTimeSelect
+                    // selected={event.eventDate ? event.eventDate : startDate}
+                    onChange={date => setStartDate(date)}
+                    timeFormat="HH:mm"
+                    timeClassName={handleColor}
+                    name="eventDate"
+                    value={
+                      startDate
+                        ? moment(startDate).format("DD-MM-YYYY HH:mm")
+                        : moment(event.eventDate).format("DD-MM-YYYY HH:mm")
+                    }
+                  />
+                </div>
+                <div className="selectDiv">
+                  <label>Set Highlight</label>
+                  <Select
+                    styles={customStyles}
+                    value={selectedOption ? selectedOption : event.highlighted}
+                    onChange={handleSelectChange}
+                    options={options}
+                    className="selectInput"
+                    classNamePrefix="selectField"
+                    //placeholder="Set Highlighted"
+                    defaultValue={{
+                      label: event.highlighted ? "Highlighted" : "Normal",
+                      value: event.highlighted ? true : false
+                    }}
+                  />
+                </div>
               </div>
-              <div className="selectAndFile">
-                <div className="fileDiv">
-                  <p>Pick New Event Image:</p>
+              <TextareaValidationField
+                label="Event Description"
+                name="eventDescription"
+                placehodler="Event Description"
+                onChange={changeNow}
+                onBlur={handleBlur}
+                value={
+                  values.eventDescription
+                    ? values.eventDescription
+                    : event.eventDescription
+                }
+                errors={errors.eventDescription}
+                touched={touched.eventDescription}
+              />
+              <div className="rowSelect">
+                <div className="inputField">
+                  <div className="fileDiv">
+                    <p>Pick New Event Image:</p>
 
-                  <label htmlFor="customFile">{filename}</label>
-                  <div htmlFor="customFile" className="typeFile">
-                    <input
-                      type="file"
-                      name="file"
-                      className="custom-file-input"
-                      id="customFile"
-                      placeholder="Upload an Image"
-                      onChange={onChange}
-                    />
-                    <div className="error">
-                      {errors.eventImage &&
-                        touched.eventImage &&
-                        errors.eventImage}
+                    <label htmlFor="customFile">{filename}</label>
+                    <div htmlFor="customFile" className="typeFile">
+                      <input
+                        type="file"
+                        name="file"
+                        className="custom-file-input"
+                        id="customFile"
+                        placeholder="Upload an Image"
+                        onChange={onChange}
+                      />
+                      <div className="error">
+                        {errors.eventImage &&
+                          touched.eventImage &&
+                          errors.eventImage}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -259,11 +325,12 @@ const EditEvent = props => {
                 <Button
                   bgColor={"#3F5D88"}
                   width={"100%"}
-                  padding={"5px 0px"}
-                  margin={"100px 0px"}
+                  padding={"15px 0px"}
+                  margin={"15px 0px"}
                   fWeight={"600"}
                   fSize={"16px"}
-                  bRadius={"5px"}
+                  bRadius={"50px"}
+                  letterSpacing={"1px"}
                   txtColor={"#fff"}
                   hoverBg={"#fff"}
                   hoverTxt={"#3F5D88"}

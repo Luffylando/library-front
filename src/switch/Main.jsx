@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Switch, Route, Redirect, Router } from "react-router";
+import { Switch, Route, Redirect } from "react-router";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import Logout from "../pages/Logout";
@@ -28,10 +28,34 @@ const DefaultSwitch = () => (
   <Switch>
     <Route exact path="/" component={Home} />
     <Route
+      exact
+      path="/members/verify/:id/:verificationToken"
+      component={Verify}
+    />
+    <Route exact path="/contact" component={Contact} />
+    <Route exact path="/catalog" component={Catalog} />
+    <Route exact path="/events/:id" component={SingleEvent} />
+    <Route exact path="/events" component={Events} />
+    <Route exact path="/books/search/:keyword/:tag" component={Search} />
+    <Route exact path="/books/:id" component={SingleBook} />
+    <Route exact path="/about" component={About} />
+    <Route exact path="/login" component={Login} />
+    <Route exact path="/register" component={Register} />
+    <Route exact path="/logout" component={Logout} />
+    <Redirect to="/" />
+  </Switch>
+);
+
+const AdminSwitch = () => (
+  <Switch>
+    <Route exact path="/" component={Home} />
+    <Route
+      exact
       path="/contact/messages/answered/:paginationNumber/:itemsPerPage"
       component={AnsweredMessages}
     />
     <Route
+      exact
       path="/contact/messages/archived/:paginationNumber/:itemsPerPage"
       component={ArchivedMessages}
     />
@@ -39,37 +63,45 @@ const DefaultSwitch = () => (
       path="/contact/messages/:paginationNumber/:itemsPerPage"
       component={Messages}
     />
-    <Route path="/members/verify/:id/:verificationToken" component={Verify} />
+    <Route
+      exact
+      path="/members/verify/:id/:verificationToken"
+      component={Verify}
+    />
     <Route exact path="/contact/messages/:id" component={SingleMessage} />
 
-    <Route path="/contact" component={Contact} />
-    <Route path="/catalog/archived" component={ArchivedBooks} />
-    <Route path="/catalog" component={Catalog} />
-    <Route path="/events/add" component={AddEvent} />
-    <Route path="/events/edit/:id" component={EditEvent} />
+    <Route exact path="/contact" component={Contact} />
+    <Route exact path="/catalog/archived" component={ArchivedBooks} />
+    <Route exact path="/catalog" component={Catalog} />
+    <Route exact path="/events/add" component={AddEvent} />
+    <Route exact path="/events/edit/:id" component={EditEvent} />
 
-    <Route path="/events/:id" component={SingleEvent} />
-    <Route path="/events" component={Events} />
+    <Route exact path="/events/:id" component={SingleEvent} />
+    <Route exact path="/events" component={Events} />
 
-    <Route path="/changePassword" component={ChangePassword} />
-    <Route path="/books/add" component={AddBook} />
-    <Route path="/books/search/:keyword/:tag" component={Search} />
-    <Route path="/books/edit/:id" component={EditBook} />
-    <Route path="/books/:id" component={SingleBook} />
+    <Route exact path="/changePassword" component={ChangePassword} />
+    <Route exact path="/books/add" component={AddBook} />
+    <Route exact path="/books/search/:keyword/:tag" component={Search} />
+    <Route exact path="/books/edit/:id" component={EditBook} />
+    <Route exact path="/books/:id" component={SingleBook} />
 
-    <Route path="/users/edit/:id" component={EditUser} />
+    <Route exact path="/users/edit/:id" component={EditUser} />
 
-    <Route path="/about" component={About} />
-    <Route path="/login" component={Login} />
-    <Route path="/register" component={Register} />
-    <Route path="/logout" component={Logout} />
+    <Route exact path="/about" component={About} />
+    <Route exact path="/login" component={Login} />
+    <Route exact path="/register" component={Register} />
+    <Route exact path="/logout" component={Logout} />
     <Redirect to="/" />
   </Switch>
 );
 
 class Main extends Component {
   render() {
-    let routes = <DefaultSwitch />;
+    let routes;
+    localStorage.getItem("userRole") === "admin"
+      ? (routes = <AdminSwitch />)
+      : (routes = <DefaultSwitch />);
+
     return <Switch>{routes}</Switch>;
   }
 }

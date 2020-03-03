@@ -42,7 +42,7 @@ class AnsweredMessages extends Component {
   };
 
   unanswerMessage = async id => {
-    let data = { answered: null };
+    let data = { answered: false };
     await axios.put(`http://localhost:4000/contact/message/update/${id}`, data);
     this.componentDidMount();
   };
@@ -92,79 +92,81 @@ class AnsweredMessages extends Component {
             </Link>
           </div>
           {this.state.messages.length !== 0 ? (
-            <table className="ui celled table">
-              <thead className="">
-                <tr className="">
-                  <th className="">Fullname</th>
-                  <th className="">Email</th>
-                  <th className="">Message</th>
-                  <th className="">Status</th>
-                  <th className="">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="">
-                {this.state.messages.map(value => (
-                  <tr key={value.id} className="">
-                    <td className="">
-                      {value.lastName} {value.firstName}
-                    </td>
-                    <td className="">{value.email}</td>
-                    <td className="">{value.message}</td>
-                    <td className="">status to add...</td>
-                    <td className="actionBtns">
-                      <Button
-                        bgColor={"#F25925"}
-                        width={"100px"}
-                        padding={"10px 0px"}
-                        margin={"5px 10px 5px 0px"}
-                        fWeight={"600"}
-                        btnBorder={"1px solid transparent"}
-                        fSize={"14px"}
-                        bRadius={"5px"}
-                        txtColor={"#fff"}
-                        hoverBg={"#fff"}
-                        hoverTxt={"#F25925"}
-                        transition={"all 0.3s"}
-                        hoverBorder={"1px solid #F25925"}
-                        btnText={"Unanswer"}
-                        onClick={() => {
-                          this.unanswerMessage(value.id);
-                        }}
-                      ></Button>
-                      <Button
-                        bgColor={"#3F5D88"}
-                        width={"100px"}
-                        padding={"10px 0px"}
-                        margin={"5px 0px 5px 0px"}
-                        fWeight={"600"}
-                        btnBorder={"1px solid gray"}
-                        fSize={"14px"}
-                        bRadius={"5px"}
-                        txtColor={"#fff"}
-                        hoverBg={"#fff"}
-                        hoverTxt={"#3F5D88"}
-                        transition={"all 0.3s"}
-                        hoverBorder={"1px solid #3F5D88"}
-                        btnText={"Archive"}
-                        onClick={() => {
-                          this.archiveMessage(value.id);
-                        }}
-                      ></Button>
-                    </td>
+            <>
+              <table className="ui celled table">
+                <thead className="">
+                  <tr className="">
+                    <th className="">Fullname</th>
+                    <th className="">Email</th>
+                    <th className="">Message</th>
+                    <th className="">Status</th>
+                    <th className="">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="">
+                  {this.state.messages.map(value => (
+                    <tr key={value.id} className="">
+                      <td className="">
+                        {value.lastName} {value.firstName}
+                      </td>
+                      <td className="">{value.email}</td>
+                      <td className="">{value.message}</td>
+                      <td className="">status to add...</td>
+                      <td className="actionBtns">
+                        <Button
+                          bgColor={"#F25925"}
+                          width={"100px"}
+                          padding={"10px 0px"}
+                          margin={"5px 10px 5px 0px"}
+                          fWeight={"600"}
+                          btnBorder={"1px solid transparent"}
+                          fSize={"14px"}
+                          bRadius={"5px"}
+                          txtColor={"#fff"}
+                          hoverBg={"#fff"}
+                          hoverTxt={"#F25925"}
+                          transition={"all 0.3s"}
+                          hoverBorder={"1px solid #F25925"}
+                          btnText={"Unanswer"}
+                          onClick={() => {
+                            this.unanswerMessage(value.id);
+                          }}
+                        ></Button>
+                        <Button
+                          bgColor={"#3F5D88"}
+                          width={"100px"}
+                          padding={"10px 0px"}
+                          margin={"5px 0px 5px 0px"}
+                          fWeight={"600"}
+                          btnBorder={"1px solid gray"}
+                          fSize={"14px"}
+                          bRadius={"5px"}
+                          txtColor={"#fff"}
+                          hoverBg={"#fff"}
+                          hoverTxt={"#3F5D88"}
+                          transition={"all 0.3s"}
+                          hoverBorder={"1px solid #3F5D88"}
+                          btnText={"Archive"}
+                          onClick={() => {
+                            this.archiveMessage(value.id);
+                          }}
+                        ></Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <Pagination
+                paginationCount={this.state.messagesCount}
+                currentPage={parseInt(window.location.pathname.split("/")[4])}
+                url={`/contact/messages/answered`}
+                itemsPerPage={parseInt(this.state.itemsPerPage)}
+                activePage={parseInt(this.state.activePage)}
+              />
+            </>
           ) : (
-            "There are no more messages."
+            <p className="noMessages">There are no unanswered messages.</p>
           )}
-          <Pagination
-            paginationCount={this.state.messagesCount}
-            currentPage={parseInt(window.location.pathname.split("/")[4])}
-            url={`/contact/messages/answered`}
-            itemsPerPage={parseInt(this.state.itemsPerPage)}
-            activePage={parseInt(this.state.activePage)}
-          />
         </MessageStyle>
         <Footer />
       </>

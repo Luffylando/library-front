@@ -18,8 +18,11 @@ import onClickOutside from "react-onclickoutside";
 import axios from "axios";
 import Button from "../Button";
 import Select from "react-select";
+import { connect } from "react-redux";
+import { ActiveMenuItem } from "../../actions/ActiveMenuItem";
 
 const options = [
+  { value: "all", label: "No Filter" },
   { value: "title", label: "Title" },
   { value: "author", label: "Author" },
   { value: "genre", label: "Genre" }
@@ -68,8 +71,10 @@ class Header extends Component {
 
   async componentDidMount() {
     let id = parseInt(localStorage.getItem("userId"));
-    let currentUser = await axios.get(`http://localhost:4000/users/${id}`);
-    this.setState({ imageName: currentUser.data.image });
+    if (id) {
+      let currentUser = await axios.get(`http://localhost:4000/users/${id}`);
+      this.setState({ imageName: currentUser.data.image });
+    }
   }
 
   handleClickOutside = evt => {
@@ -78,14 +83,22 @@ class Header extends Component {
     this.setState({ toggleSubmenu: false });
   };
 
+  changeActiveMenu = name => {
+    this.props.ActiveMenuItem(name);
+  };
+
   setValue = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
 
   searchClick = () => {
-    let tag = this.state.tag.value === "" ? "tag" : this.state.tag.value;
+    let tag =
+      this.state.tag === "" || this.state.tag.value === "all"
+        ? "tag"
+        : this.state.tag.value;
     let keyword = this.state.keyword === "" ? "keyword" : this.state.keyword;
     window.location.href = `/books/search/${keyword}/${tag}`;
+    this.changeActiveMenu("");
   };
 
   toggleSubmenu = () => {
@@ -93,7 +106,6 @@ class Header extends Component {
   };
 
   handleSelectChange = selectedOption => {
-    console.log("sele", selectedOption);
     this.setState({ selectedOption, tag: selectedOption });
   };
 
@@ -102,7 +114,12 @@ class Header extends Component {
       <HeaderStyle>
         <div className="header">
           <div className="logoSearch">
-            <Link to="/">
+            <Link
+              to="/"
+              onClick={() => {
+                this.changeActiveMenu("");
+              }}
+            >
               <div className="logo">
                 <SVGInline svg={logo} />
                 <div className="logoText">
@@ -129,7 +146,7 @@ class Header extends Component {
                     options={options}
                     className="selectInput"
                     classNamePrefix="selectField"
-                    placeholder="Sort By:"
+                    placeholder="Filter By:"
                     defaultValue=""
                   />
                 </div>
@@ -154,17 +171,10 @@ class Header extends Component {
             {localStorage.loginToken ? (
               <>
                 <div className="item">
-                  {/* <img
-                    className="accountImage"
-                    src={`/team/${this.state.imageName}`}
-                  /> */}
-
                   <Link to="#" onClick={this.toggleSubmenu}>
                     <SVGInline svg={account} />
                   </Link>
-                  <P>
-                    {localStorage.userFirstName} {localStorage.userLastName}
-                  </P>
+                  <P>Hi, {localStorage.userFirstName}</P>
                   <div className="arrow">
                     <Link to="#" onClick={this.toggleSubmenu}>
                       <SVGInline svg={downArrow} />
@@ -173,20 +183,51 @@ class Header extends Component {
                 </div>
                 {this.state.toggleSubmenu ? (
                   <div className="submenuWindow">
-                    <Link to="/changePassword">
+                    <Link
+                      to="/changePassword"
+                      onClick={() => {
+                        this.changeActiveMenu("");
+                      }}
+                    >
                       <p>Change Password</p>
+                    </Link>
+                    <Link
+                      to="/contact"
+                      onClick={() => {
+                        this.changeActiveMenu("Contact");
+                      }}
+                    >
+                      <p>Contact</p>
+                    </Link>
+                    <Link
+                      to="/logout"
+                      onClick={() => {
+                        this.changeActiveMenu("");
+                      }}
+                    >
+                      <p>Logout</p>
                     </Link>
                   </div>
                 ) : null}
                 <div className="item">
                   <SVGInline svg={pencil} />
-                  <Link to={`/users/edit/${localStorage.userId}`}>
+                  <Link
+                    to={`/users/edit/${localStorage.userId}`}
+                    onClick={() => {
+                      this.changeActiveMenu("");
+                    }}
+                  >
                     <P>Edit Profile</P>
                   </Link>
                 </div>
                 <div className="item">
                   <SVGInline svg={login} />
-                  <Link to="/logout">
+                  <Link
+                    to="/logout"
+                    onClick={() => {
+                      this.changeActiveMenu("");
+                    }}
+                  >
                     <P>Logout</P>
                   </Link>
                 </div>
@@ -195,20 +236,36 @@ class Header extends Component {
               <>
                 <div className="item">
                   <SVGInline svg={login} />
-                  <Link to="/login">
+                  <Link
+                    to="/login"
+                    onClick={() => {
+                      this.changeActiveMenu("");
+                    }}
+                  >
                     <P>Login</P>
                   </Link>
                 </div>
                 <div className="item">
                   <SVGInline svg={register} />
-                  <Link to="register">
+                  <Link
+                    to="/register"
+                    onClick={() => {
+                      this.changeActiveMenu("");
+                    }}
+                  >
                     <P>Register</P>
                   </Link>
                 </div>
                 <div className="item">
                   <SVGInline svg={contact} />
-
-                  <P>Contact</P>
+                  <Link
+                    to="/contact"
+                    onClick={() => {
+                      this.changeActiveMenu("Contact");
+                    }}
+                  >
+                    <P>Contact</P>
+                  </Link>
                 </div>
               </>
             )}
@@ -220,4 +277,15 @@ class Header extends Component {
   }
 }
 
-export default onClickOutside(Header);
+const mapStateToProps = state => ({
+  ...state
+});
+
+const mapDispatchToProps = dispatch => ({
+  ActiveMenuItem: value => dispatch(ActiveMenuItem(value))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(onClickOutside(Header));

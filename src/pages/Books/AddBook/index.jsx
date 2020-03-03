@@ -4,28 +4,58 @@ import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
 import InputValidationField from "../../../components/InputValidationField";
 import TextareaValidationField from "../../../components/TextareaValidationField";
-import SelectValidationField from "../../../components/SelectValidationField";
 import axios from "axios";
 import { Formik } from "formik";
-import H1 from "../../../ui/H1";
+import H2 from "../../../ui/H2";
+import Button from "../../../components/Button";
 import { store } from "react-notifications-component";
 import AddBookSchema from "./validation";
-import Button from "../../../components/Button";
+import Select from "react-select";
 
 const options = [
-  { id: "Romance", name: "Romance" },
-  { id: "History", name: "History" },
-  { id: "Crime", name: "Crime" },
-  { id: "Philosophy", name: "Philosophy" },
-  { id: "Belatristics", name: "Belatristics" }
+  { value: "Romance", label: "Romance" },
+  { value: "History", label: "History" },
+  { value: "Crime", label: "Crime" },
+  { value: "Philosophy", label: "Philosophy" },
+  { value: "Belatristics", label: "Belatristics" }
 ];
 
-const AddBook = () => {
-  const [imageName] = useState("");
-  let [genre] = useState("");
-  let [validate, setValidate] = useState(false);
+const highlightedOptions = [
+  { value: true, label: "Highlighted" },
+  { value: false, label: "Normal" }
+];
+const customStyles = {
+  option: (styles, state) => ({
+    ...styles,
+    color: state.isSelected ? "#FFF" : styles.color,
+    backgroundColor: state.isSelected ? "#3F5D88" : styles.color,
+    borderBottom: "1px solid rgba(0, 0, 0, 0.125)",
+    border: "none",
 
-  let [quote] = useState("");
+    "&:hover": {
+      color: "#FFF",
+      backgroundColor: "#3F5D88",
+      border: "none"
+    },
+    height: "fit-content"
+  }),
+  control: (styles, state) => ({
+    ...styles,
+    margin: "10px 0px",
+    boxShadow: "none",
+    borderColor: "#c4c4c4",
+    "&:hover": {}
+  })
+};
+
+const AddBook = () => {
+  let [validate, setValidate] = useState(false);
+  let [selectedOption, setSelectedOption] = useState(null);
+  let [highlightOption, setHighlightOption] = useState(null);
+
+  let [tag, setTag] = useState("");
+  let [higlightTag, setHighlightTag] = useState("");
+
   const [file, setFile] = useState("");
   const [filename, setFilename] = useState("Chose File");
   const [uploadedFile, setUploadedFile] = useState({});
@@ -35,11 +65,21 @@ const AddBook = () => {
     setFilename(e.target.files[0].name);
   };
 
+  const handleSelectChange = selectedOption => {
+    setSelectedOption(selectedOption);
+    setTag(selectedOption);
+  };
+
+  const handleHighlightChange = highlightOption => {
+    setHighlightOption(highlightOption);
+    setHighlightTag(highlightOption);
+  };
+
   return (
     <Fragment>
       <Header />
       <AddBookStyle>
-        <H1>Add New Book</H1>
+        <div className="leftCoverImage"></div>
         <Formik
           initialValues={{ author: "", title: "", quote: "" }}
           validationSchema={validate === true ? AddBookSchema : null}
@@ -57,21 +97,23 @@ const AddBook = () => {
                     }
                   }
                 );
-                const { fileName, filePath, type, fullName } = res.data;
+                const { filePath, fullName } = res.data;
                 setUploadedFile({ fullName, filePath });
                 await axios.post("http://localhost:4000/books/add", {
                   title: values.title,
                   author: values.author,
-                  genre: values.genre,
+                  genre: selectedOption.value,
                   quote: values.quote,
+                  highlighted: highlightOption.value,
                   image: fullName
                 });
               } else {
                 await axios.post("http://localhost:4000/books/add", {
                   title: values.title,
                   author: values.author,
-                  genre: values.genre,
+                  genre: selectedOption.value,
                   quote: values.quote,
+                  highlighted: highlightOption.value,
                   image: ""
                 });
               }
@@ -97,7 +139,7 @@ const AddBook = () => {
             } catch (err) {
               console.log("err", err);
               if (err.response.status === 500) {
-                console.log("THERE was a problem with the server.");
+                console.log("There was a problem with the server.");
               } else {
                 console.log(err.response.data.msg);
               }
@@ -118,30 +160,27 @@ const AddBook = () => {
             handleBlur,
             handleSubmit,
             isSubmitting
-
-            /* and other goodies */
           }) => (
             <form onSubmit={handleSubmit}>
-              <div className="inputDiv">
-                <InputValidationField
-                  label="Author"
-                  type="text"
-                  name="author"
-                  placehodler="Author"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.author}
-                  errors={errors.author}
-                  touched={touched.author}
-                />
-              </div>
-              <div className="inputDiv">
-                <div className="inputDiv">
+              <H2>Add Book</H2>
+              <div className="row">
+                <div className="inputField">
+                  <InputValidationField
+                    label="Author"
+                    type="text"
+                    name="author"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.author}
+                    errors={errors.author}
+                    touched={touched.author}
+                  />
+                </div>
+                <div className="inputField">
                   <InputValidationField
                     label="Title"
                     type="text"
                     name="title"
-                    placehodler="Title"
                     onChange={handleChange}
                     onBlur={handleBlur}
                     value={values.title}
@@ -150,33 +189,53 @@ const AddBook = () => {
                   />
                 </div>
               </div>
-              <div className="textareaDiv">
-                <TextareaValidationField
-                  label="Quote"
-                  name="quote"
-                  placehodler="Quote"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.quote}
-                  errors={errors.quote}
-                  touched={touched.quote}
-                />
-              </div>
-              <div className="selectAndFile">
+              <TextareaValidationField
+                label="Quote"
+                name="quote"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.quote}
+                errors={errors.quote}
+                touched={touched.quote}
+              />
+              <div className="row">
                 <div className="selectDiv">
-                  <SelectValidationField
-                    label="Genre"
+                  <label>Genre</label>
+                  <Select
+                    label={"Genre"}
                     name="genre"
-                    placehodler="Genre"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.genre}
+                    styles={customStyles}
+                    value={selectedOption}
+                    onChange={handleSelectChange}
+                    options={options}
+                    className="selectInput"
+                    classNamePrefix="selectField"
+                    placeholder="Choose Genre"
+                    defaultValue=""
                     errors={errors.genre}
                     touched={touched.genre}
-                    options={options}
                   />
                 </div>
+                <div className="selectDiv">
+                  <label>HIghlight</label>
+                  <Select
+                    label={"Highlight Book"}
+                    name="highlight"
+                    styles={customStyles}
+                    value={highlightOption}
+                    onChange={handleHighlightChange}
+                    options={highlightedOptions}
+                    className="selectInput"
+                    classNamePrefix="selectField"
+                    placeholder="Set Highlight"
+                    defaultValue=""
+                    errors={errors.genre}
+                    touched={touched.genre}
+                  />
+                </div>
+              </div>
 
+              <div className="inputField">
                 <div className="fileDiv">
                   <p>Pick Image:</p>
                   <label htmlFor="customFile">{filename}</label>
@@ -186,7 +245,6 @@ const AddBook = () => {
                       name="file"
                       className="custom-file-input"
                       id="customFile"
-                      placeholder="Upload an Image"
                       onChange={onChange}
                     />
                     <div className="error">
@@ -199,15 +257,16 @@ const AddBook = () => {
                 <Button
                   bgColor={"#3F5D88"}
                   width={"100%"}
-                  padding={"5px 0px"}
-                  margin={"10px 0px"}
+                  padding={"15px 0px"}
+                  margin={"15px 0px"}
                   fWeight={"600"}
                   fSize={"16px"}
-                  bRadius={"5px"}
+                  bRadius={"50px"}
+                  letterSpacing={"1px"}
                   txtColor={"#fff"}
                   hoverBg={"#fff"}
                   hoverTxt={"#3F5D88"}
-                  transition={"all 0.3s"}
+                  transition={"all 0.2s"}
                   hoverBorder={"1px solid #3F5D88"}
                   btnText={"Add Book"}
                   type={"submit"}

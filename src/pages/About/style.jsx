@@ -3,23 +3,24 @@ import lib from "../../assets/imgs/lib.jpeg";
 
 const AboutStyle = styled.div`
   min-height: calc(100vh - 215px);
-  padding: 50px 200px;
+  padding: 60px 200px 0px 200px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: Center;
+  background: #f9f8f8;
 
   .mainTitle {
     font-size: 55px;
     text-align: center;
-    margin: 10px 0px 20px 0px;
+    margin: 10px 0px 10px 0px;
   }
 
   .mainSubtitle {
     font-size: 22px;
     text-align: center;
     line-height: 60px;
-    margin: 20px 0px;
+    margin: 15px 0px;
   }
 
   p {
@@ -49,7 +50,7 @@ const AboutStyle = styled.div`
       padding: 15px 55px;
       border-radius: 30px;
       font-size: 16px;
-      margin: 20px 10px;
+      margin: 10px 10px;
     }
     .learn {
       cursor: pointer;
@@ -60,7 +61,7 @@ const AboutStyle = styled.div`
       padding: 15px 55px;
       border-radius: 30px;
       font-size: 16px;
-      margin: 20px 10px;
+      margin: 10px 10px;
     }
   }
 `;

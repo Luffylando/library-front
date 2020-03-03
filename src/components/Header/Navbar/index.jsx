@@ -3,7 +3,6 @@ import NavbarStyle from "./style";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { ActiveMenuItem } from "../../../actions/ActiveMenuItem";
-import { DeactiveMenuItem } from "../../../actions/DeactiveMenuItem";
 
 class Navbar extends Component {
   constructor() {
@@ -122,8 +121,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  ActiveMenuItem: value => dispatch(ActiveMenuItem(value)),
-  DeactiveMenuItem: value => dispatch(DeactiveMenuItem(value))
+  ActiveMenuItem: value => dispatch(ActiveMenuItem(value))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Navbar);

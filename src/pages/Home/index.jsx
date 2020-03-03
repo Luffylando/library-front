@@ -8,6 +8,11 @@ import Sponsors from "../../sections/Home/Sponsors";
 import Footer from "../../components/Footer";
 
 export default class Home extends Component {
+  constructor() {
+    super();
+    this.state = {};
+  }
+
   render() {
     return (
       <HomeStyle>
